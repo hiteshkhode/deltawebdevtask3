@@ -1,0 +1,101 @@
+#heading{
+    color: rgb(250, 192, 159);
+}
+div{
+    border-radius: 10px;
+    padding: 0.5rem;
+}
+body{
+    background-color: rgb(102, 36, 36);
+}
+#bodyschild{
+    display: flex;
+    height: 1000px;
+}
+#navbar{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(245, 88, 88);
+    flex-grow: 1;
+    padding: 1rem 1rem 1rem 1rem;
+    border-style: solid;
+    border-right: 0;
+}
+#navbarbtn{
+    position: absolute;
+    margin: 0.5em 0.5em 0.5em 0.5em;
+}
+#none{
+    display: none;
+}
+#content{
+    background-color: rgb(253, 208, 208);
+    border-style: solid;
+    flex-grow: 15;
+    padding: 2rem 2rem 2rem 2rem;
+}
+#createdteams{
+    height: 30%;
+    border-style: solid;
+}
+#invitition{
+    margin-top: 30px;
+    height: 30%;
+    border-style: solid;
+}
+.pollcreationform, #signinbox, .teamcreationform{
+    display: flex;
+    flex-direction: column;
+    width: 26%;
+    background-color: beige;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -15%;
+    margin-left: -13%;
+}
+#pollcreationform{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 10% 10% 10% 10%;
+}
+#options{
+    display: flex;
+    flex-direction: column;
+}
+#closebutton{
+    position: absolute;
+    right: 0.5em;
+    width: 5%;
+}
+.invitedteams, .createdteamtiles{
+    width: 100px;
+    height: 100px;
+    background-color: blueviolet;
+}
+#invitition, #createdteams{
+    display: flex;
+    flex-direction: column;
+}
+#invitedteams, #createdteamtiles{
+    display: flex;
+}
+/* THIS CODE FOR THE LOGIN FORM /////////////////////////////////////////////////////////////// */
+div{
+    border-radius: 5px;
+}
+#msg{
+    color: red;
+}
+#signinbox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#displaynone{
+    display: none;
+}
+.invite{
+    margin: 0.5rem
+}

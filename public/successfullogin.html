@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="successfullogin.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login successful</title>
+</head>
+<body>
+    <h1 id="heading">YOU ARE YET TO LOG IN .......!</h1>
+    <div id="bodyschild">
+        <button id="navbarbtn" onclick="navbarhideshower()">></button>
+        <div id="none" class="navbar">
+            <ul>
+                <li>one</li>
+                <li>two</li>
+                <li>three</li>
+            </ul>
+        </div>
+        <div id="content">
+            <div id="createdteams">
+                <button id="torefreshcreatedteams" onclick="refreshingcreatedteams()">REFRESH</button>
+                <button onclick="teamcreationformlaunch()">+</button>
+                <div id="createdteamtiles"></div>
+            </div>
+            <div id="invitition">
+                <button id="refreshinvitations" onclick="refreshinvitations()">REFRESH</button>
+                <div id="invitedteams">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="none" class="pollcreationform">
+        <button type="close" id="closebutton" onclick="pollcreationformlaunch()">X</button>
+        <form action="/createpoll" method="post" id="pollcreationform">
+            Question:
+            <input type="text" name="question" id="pollcreationquestion">
+            Options:
+            <div id="options">
+                <input type="text" name="optioninput" class="optioninput" id="optioninput">
+            </div>
+            <span id="optionaddition" onclick="addoption()">Add option</span>
+            <button type="submit">SUBMIT</button>
+        </form>
+    </div>
+    <div id="none" class="teamcreationform">
+        <button type="close" id="closebutton" onclick="teamcreationformlaunch()">X</button>
+        <br>
+        <form id="teamcreationform">
+            Name Of the Team:
+            <input type="teamname" />
+            <button id="createteam" type="submit">CREATE TEAM</button>
+        </form>
+        <div class="invite">
+            <h4 class="invite">INVITITIONS:</h4>
+            <form id="inviteuser">
+                <input type="text" id="guest"> 
+                <button type="submit">Invite user</button>
+            </form>
+        </div>
+    </div>
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- THIS IS FOR QUESTION DISPLAY -->
+    <div>
+
+    </div>
+
+
+
+    <!-- ////////////////////////////////////////////////////////////////////////////THIS IS CODE FOR THE SIGNUP DIALOGUE BOX -->
+
+    <div id="signinbox" class="signinbox">
+        <div id="msg"></div>
+        <div id="inchoser">
+            <button id="login" onclick="inchoser(login)">Login</button>
+            <button id="signup" onclick="inchoser(signup)">Sign up</button>
+        </div>
+        <form action="/login" method="POST" id="loginform">
+            <div id="displaynone" class="username">
+                Username:
+                <br>
+                <input type="text">
+            </div>
+            <div>
+                Email:
+                <br>
+                <input type="email" name="email" id="email" />
+                <br>
+                Password:
+                <br>
+                <input type="password" name="password" id="password" autocomplete="off" />
+                <br>
+                <button type="submit" align = 'center'>SUBMIT</button>
+            </div>
+        </form>
+    </div>
+    <script src="successfullogin.js"></script>
+</body>
+</html>
