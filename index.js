@@ -53,7 +53,7 @@ function login(req, res) {
     })
 }
 function teamcreation(req, res) {
-    querytocreateteam = 'CREATE TABLE teams( admin NVARCHAR(320), teamname VARCHAR(32));'
+    querytocreateteam = 'CREATE TABLE teams( admin NVARCHAR(320), teamname VARCHAR(32) UNIQUE);'
     db.query(querytocreateteam, (errorincreatingteam, result) => {
         if(errorincreatingteam) console.log(errorincreatingteam.sqlMessage)
         querytoaddadminandteamname = 'INSERT INTO teams VALUES("' + req.body.email + '", "' + req.body.email + req.body.teamname + '");'
@@ -92,11 +92,11 @@ function inviteuser(req, res) {
     var querytocreateinvitetable = "CREATE TABLE `invites" + emailtoinvite + "`(invitedteam VARCHAR(32) UNIQUE);"
     db.query(querytocreateinvitetable, (errortocreateinviteestable, result) => {
         if (errortocreateinviteestable) console.log(errortocreateinviteestable.sqlMessage)
-    var querytoappendtoinviteestable = "INSERT INTO `invites" + emailtoinvite + "` VALUES('" + req.body.teamname + "');"
-    db.query(querytoappendtoinviteestable, (errorinappendingtoinviteestable) => {
-        if(errorinappendingtoinviteestable) console.log("errorininvite" + errorinappendingtoinviteestable.sqlMessage)
-        else res.send({fallout: 'success'})
-    })
+        var querytoappendtoinviteestable = "INSERT INTO `invites" + emailtoinvite + "` VALUES('" + req.body.teamname + req.body.email + "');"
+        db.query(querytoappendtoinviteestable, (errorinappendingtoinviteestable) => {
+            if(errorinappendingtoinviteestable) console.log("errorininvite" + errorinappendingtoinviteestable.sqlMessage)
+            else res.send({fallout: 'success'})
+            })
     })
 }
 
@@ -116,29 +116,33 @@ function refreshingcreatedteams(req, res) {
     arrayofcreatedpolls = []
     let counterone;
     let countertwo = 0;
-    querytogetcreatedteams = "SELECT pollid FROM polls WHERE admin = '" + email + "'";
+    querytogetcreatedteams = "SELECT teamname FROM teams WHERE admin = '" + email + "'";
     db.query(querytogetcreatedteams, (errtogetcreatedteams, result) => {
-        if(errtogetcreatedteams) console.log(errtogetcreatedteams.sqlMessage);
-        counterone = result.length
-        for (let i = 0; i < result.length; i++) {
-            arrayofcreatedpolls.push(result[i].pollid)
-            countertwo += 1
-        }
-        if(countertwo == counterone) {
-            // res.send({arrayofcreatedpolls})
-            var arraytosend = []
-            let firstcounter = 0;
-            for (let i = 0; i < arrayofcreatedpolls.length; i++) {
-                querytogetquestiontable = "SELECT * FROM `" + arrayofcreatedpolls[i] + "`;"
-                db.query(querytogetquestiontable, (erringettingquestiontables, result) => {
-                    if(erringettingquestiontables) console.log(erringettingquestiontables.sqlMessage)
-                    arraytosend.push(result)
-                    firstcounter += 1
-                    if(firstcounter === arrayofcreatedpolls.length) res.send(arraytosend)
-                })
-            }
-        }
+        if(errtogetcreatedteams) console.log(errtogetcreatedteams.sqlMessage)
+        res.send({result})
     })
+    // db.query(querytogetcreatedteams, (errtogetcreatedteams, result) => {
+    //     if(errtogetcreatedteams) console.log(errtogetcreatedteams.sqlMessage);
+    //     counterone = result.length
+    //     for (let i = 0; i < result.length; i++) {
+    //         arrayofcreatedpolls.push(result[i].pollid)
+    //         countertwo += 1
+    //     }
+    //     if(countertwo == counterone) {
+    //         // res.send({arrayofcreatedpolls})
+    //         var arraytosend = []
+    //         let firstcounter = 0;
+    //         for (let i = 0; i < arrayofcreatedpolls.length; i++) {
+    //             querytogetquestiontable = "SELECT * FROM `" + arrayofcreatedpolls[i] + "`;"
+    //             db.query(querytogetquestiontable, (erringettingquestiontables, result) => {
+    //                 if(erringettingquestiontables) console.log(erringettingquestiontables.sqlMessage)
+    //                 arraytosend.push(result)
+    //                 firstcounter += 1
+    //                 if(firstcounter === arrayofcreatedpolls.length) res.send(arraytosend)
+    //             })
+    //         }
+    //     }
+    // })
 }
 
 app.get('/createsignuptable', createsignuptable);

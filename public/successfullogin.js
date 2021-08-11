@@ -35,9 +35,8 @@ function refreshinvitations() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({email})}).then(response => response.json().then(data => appendtodivtoarea(data.result, 'invitedteams')))
-    
-    addbuttonstoinvite();
+        body: JSON.stringify({email})}).then(response => response.json().then(data => appendtodivtoarea(data.result, 'invitedteams', 'invitedteam')))
+
 }
 function refreshingcreatedteams() {
     document.getElementById('createdteamtiles').innerHTML = ''
@@ -49,47 +48,25 @@ function refreshingcreatedteams() {
         body: JSON.stringify({
             email
         })
-    }).then((response) => {
-        response.json().then((data) => {
-            console.log(data)
-            appendquestiontocreatearea(data)
-        })
-    })
+    }).then(response => response.json().then(data => appendtodivtoarea(data.result, 'createdteamtiles', 'teamname')))
 }
-function appendquestiontocreatearea(data) {
-    arrayofkeys = []
-    for (let i = 0; i < data.length; i++) {
-        for (let j = 0; j < data[i].length; j++) {
-            for(let k in data[i][j]){
-                arrayofkeys.push(k)
-                break
-            }
-        break
-        }
-    }
-    console.log(arrayofkeys.reverse())
-    appendtodivtoarea(arrayofkeys, 'createdteamtiles')
-}
-function appendtodivtoarea(arrayofinvites, divid) {
+function appendtodivtoarea(arrayofinvites, divid, thirdparam) {
     console.log(arrayofinvites)
     for (let i = 0; i < arrayofinvites.length; i++) {
         var div = document.createElement('div');
         div.className = divid;
-        div.innerText = arrayofinvites[i].invitedteam;
+        div.innerText = arrayofinvites[i][thirdparam];
+        div.onclick = 'memberadder()'
         document.getElementById(divid).appendChild(div);
     }
 }
-function addbuttonstoinvite() {
-    arrayofinvitetiles = document.getElementsByClassName('invitedteams')
-    for (let i = 0; i < arrayofinvitetiles.length; i++) {
-        var buttonone = document.createElement('button');
-        var buttontwo = document.createElement('button');
-        buttonone.innerText = 'Accept';
-        buttontwo.innerText = 'Decline';
-        arrayofinvitetiles[i].appendChild(buttonone);
-        arrayofinvitetiles[i].appendChild(buttontwo);
-        console.log('addbutoon is running')
-    }
+function accept(){
+    fetch('/accept', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({email})})
 }
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,4 +208,20 @@ document.getElementById('pollcreationform').addEventListener('submit', (event) =
 //                                             }
 //         }));
     
+// }
+
+
+// function addbuttonstoinvite() {
+//     arrayofinvitetiles = document.getElementsByClassName('invitedteams')
+//     for (let i = 0; i < arrayofinvitetiles.length; i++) {
+//         var buttonone = document.createElement('button');
+//         var buttontwo = document.createElement('button');
+//         buttonone.innerText = 'Accept';
+//         buttonone.onclick = 'accept()'
+//         buttontwo.innerText = 'Decline';
+//         buttontwo.onclick = 'decline()'
+//         arrayofinvitetiles[i].appendChild(buttonone);
+//         arrayofinvitetiles[i].appendChild(buttontwo);
+//         console.log('addbutoon is running')
+//     }
 // }
