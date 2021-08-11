@@ -87,7 +87,7 @@ function createpoll(req, res) {
     }
 }
 function inviteuser(req, res) {
-    emailtoinvite = req.body.email
+    emailtoinvite = req.body.invitee
     console.log('invite ran successfully ' + emailtoinvite + req.body.teamname)
     var querytocreateinvitetable = "CREATE TABLE `invites" + emailtoinvite + "`(invitedteam VARCHAR(32) UNIQUE);"
     db.query(querytocreateinvitetable, (errortocreateinviteestable, result) => {

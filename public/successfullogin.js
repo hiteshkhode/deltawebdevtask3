@@ -115,13 +115,14 @@ document.getElementById('teamcreationform').addEventListener('submit', (event) =
 document.getElementById('inviteuser').addEventListener('submit', (event) => {
     event.preventDefault();
     var teamname = document.getElementById('teamname').value
+    var invitee = document.getElementById('guest').value
     fetch('/inviteuser', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({teamname,
-            email
+            invitee
         })
     }).then(response => response.json().then(data => console.log(data)))
 })
