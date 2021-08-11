@@ -52,11 +52,12 @@ function login(req, res) {
         else res.send({ status: 'invalidcredentials' })
     })
 }
-function teamcreation(params) {
-    querytocreateteam = 'CREATE TABLE teams( admin NVARCHARA(320), teamname VARCHAR(32));'
+function teamcreation(req, res) {
+    querytocreateteam = 'CREATE TABLE teams( admin NVARCHAR(320), teamname VARCHAR(32));'
     db.query(querytocreateteam, (errorincreatingteam, result) => {
         if(errorincreatingteam) console.log(errorincreatingteam.sqlMessage)
-        querytoaddadminandteamname = 'INSERT INTO teams VALUES(' + req.body.email + ', ' + req.body.teamname + ');'
+        querytoaddadminandteamname = 'INSERT INTO teams VALUES("' + req.body.email + '", "' + req.body.email + req.body.teamname + '");'
+        console.log(querytoaddadminandteamname)
         db.query(querytoaddadminandteamname, (errtoaddadminandteamname, result) => {
             if(errtoaddadminandteamname) console.log(errtoaddadminandteamname.sqlMessage)
             else res.send({fallout: 'success'})
@@ -87,36 +88,27 @@ function createpoll(req, res) {
 }
 function inviteuser(req, res) {
     emailtoinvite = req.body.email
-    console.log('invite ran successfully ' + emailtoinvite + req.body.question)
-    questionhash = crypto.createHash('md5').update(req.body.question).digest('hex');
+    console.log('invite ran successfully ' + emailtoinvite + req.body.teamname)
     var querytocreateinvitetable = "CREATE TABLE `invites" + emailtoinvite + "`(invitedteam VARCHAR(32) UNIQUE);"
     db.query(querytocreateinvitetable, (errortocreateinviteestable, result) => {
         if (errortocreateinviteestable) console.log(errortocreateinviteestable.sqlMessage)
-    var querytoappendtoinviteestable = "INSERT INTO `invites" + emailtoinvite + "` VALUES('" + questionhash + "');"
+    var querytoappendtoinviteestable = "INSERT INTO `invites" + emailtoinvite + "` VALUES('" + req.body.teamname + "');"
     db.query(querytoappendtoinviteestable, (errorinappendingtoinviteestable) => {
         if(errorinappendingtoinviteestable) console.log("errorininvite" + errorinappendingtoinviteestable.sqlMessage)
+        else res.send({fallout: 'success'})
     })
     })
 }
 
 function refreshinvitations(req, res) {
+    console.log('good until refreshinvitations')
     querytogetinvites = "SELECT * FROM `invites" + req.body.email + "`;"
     var arrayofinvites = []
     let counterone
     let countertwo = 0
     db.query(querytogetinvites, (errtogetinvites, result) => {
-        if(result != undefined){    
-            for (let i = 0; i < result.length; i++) {
-                counterone = result.length
-                var querytogetquestionname = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + result[i]['invitedteam'] + "' ORDER BY ORDINAL_POSITION;"
-                db.query(querytogetquestionname, (errtogetquestionname, result) => {
-                    if(errtogetquestionname) console.log(errtogetquestionname.sqlMessage)
-                    arrayofinvites.push(result[0].COLUMN_NAME)
-                    countertwo += 1
-                    if(countertwo == counterone) res.send({arrayofinvites})
-                })
-            }
-        }
+        if(errtogetinvites) console.log(errtogetinvites.sqlMessage)
+        res.send({result})
     })
 }
 function refreshingcreatedteams(req, res) {

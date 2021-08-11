@@ -35,12 +35,8 @@ function refreshinvitations() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({email})}).then((response) => {
-            response.json().then((data) => {
-                appendquestiontoinvitearea(data.arrayofinvites, 'invitedteams')
-                console.log(data)
-            })
-        })
+        body: JSON.stringify({email})}).then(response => response.json().then(data => appendtodivtoarea(data.result, 'invitedteams')))
+    
     addbuttonstoinvite();
 }
 function refreshingcreatedteams() {
@@ -72,14 +68,14 @@ function appendquestiontocreatearea(data) {
         }
     }
     console.log(arrayofkeys.reverse())
-    appendquestiontoinvitearea(arrayofkeys, 'createdteamtiles')
+    appendtodivtoarea(arrayofkeys, 'createdteamtiles')
 }
-function appendquestiontoinvitearea(arrayofinvites, divid) {
+function appendtodivtoarea(arrayofinvites, divid) {
+    console.log(arrayofinvites)
     for (let i = 0; i < arrayofinvites.length; i++) {
         var div = document.createElement('div');
         div.className = divid;
-        div.innerText = arrayofinvites[i];
-        // div.oncl
+        div.innerText = arrayofinvites[i].invitedteam;
         document.getElementById(divid).appendChild(div);
     }
 }
@@ -95,30 +91,40 @@ function addbuttonstoinvite() {
         console.log('addbutoon is running')
     }
 }
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  THIS IF FOR TEAMCREATIONFORM
+
 function teamcreationformlaunch() {
     var statusofteamcreationform = document.getElementsByClassName('teamcreationform')[0].getAttribute('id')
     if (statusofteamcreationform == 'none') document.getElementsByClassName('teamcreationform')[0].setAttribute('id', '')
     else document.getElementsByClassName('teamcreationform')[0].setAttribute('id', 'none')
 }
-// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//  THIS IF FOR TEAMCREATIONFORM
-function teamcreationform() {
+document.getElementById('teamcreationform').addEventListener('submit', (event) => {
+    event.preventDefault();
     var teamname = document.getElementById('teamname').value
-    document.getElementById('teamcreationform').addEventListener('submit', (event) => {
-        event.preventDefault();
-        console.log('good until this')
-        // fetch('/teamcreation', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({email, teamname}),
-        //     })
+    fetch('/teamcreation', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({email, teamname})
+        }).then(response => response.json().then(data => console.log(data)))
 })
-}
 
-
-
+document.getElementById('inviteuser').addEventListener('submit', (event) => {
+    event.preventDefault();
+    var teamname = document.getElementById('teamname').value
+    fetch('/inviteuser', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({teamname,
+            email
+        })
+    }).then(response => response.json().then(data => console.log(data)))
+})
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  THIS IS CODE FOR LOGIN FORM
@@ -153,8 +159,8 @@ document.getElementById('loginform').addEventListener('submit', (event) => {
                         document.getElementById('msg').innerText = 'loggedin successfully'
                         document.getElementsByClassName('signinbox')[0].setAttribute('id', 'none')
                         document.getElementById('heading').innerText = 'YOUR LOGIN HAS BEEN SUCCESSFUL .....!'
-                        refreshinvitations();
-                        refreshingcreatedteams();
+                        // refreshinvitations();
+                        // refreshingcreatedteams();
                     }
                 })
             })
@@ -193,19 +199,6 @@ document.getElementById('pollcreationform').addEventListener('submit', (event) =
         },
         body: jsonstring,});
 });
-
-document.getElementById('inviteuser').addEventListener('submit', (event) => {
-    event.preventDefault();
-    fetch('/inviteuser', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({question: document.getElementById('pollcreationquestion').value,
-            email: document.getElementById('guest').value
-        })
-    })
-})
 
 // async function fetching(endpoint, email, password) {
 //     fetch(endpoint,{
