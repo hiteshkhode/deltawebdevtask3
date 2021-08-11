@@ -29,13 +29,14 @@ function addoption() {
     counterofoptions += 1
 }
 function refreshinvitations() {
+    let flag = 'pending'
     document.getElementById('invitedteams').innerHTML = ''
     fetch('/refreshinvitations', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({email})}).then(response => response.json().then(data => appendtodivtoarea(data.result, 'invitedteams', 'invitedteam')))
+        body: JSON.stringify({email, flag})}).then(response => response.json().then(data => appendtodivtoarea(data.result, 'invitedteams', 'invitedteam')))
 
 }
 function refreshingcreatedteams() {
@@ -56,17 +57,38 @@ function appendtodivtoarea(arrayofinvites, divid, thirdparam) {
         var div = document.createElement('div');
         div.className = divid;
         div.innerText = arrayofinvites[i][thirdparam];
-        div.onclick = 'memberadder()'
+        div.setAttribute('onclick', 'memberadder(event)')
         document.getElementById(divid).appendChild(div);
     }
 }
-function accept(){
-    fetch('/accept', {
+function memberadder(event){
+    invititionteamtoadd = event.target.innerText
+    if(event.target.parentNode.getAttribute('id') == 'invitedteams'){
+        fetch('/invititionadder', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                invititionteamtoadd, email
+            })
+        }).then(response => response.json().then(refreshingacceptedteams()))
+    }
+}
+function refreshingacceptedteams() {
+    document.getElementById('acceptedteamtiles').innerHTML = '';
+    let flag = 'accepted'
+    document.getElementById('invitedteams').innerHTML = ''
+    fetch('/refreshinvitations', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({email})})
+        body: JSON.stringify({email, flag})}).then(response => response.json().then((data) => {
+            appendtodivtoarea(data.result, 'acceptedteamtiles', 'invitedteam');
+            refreshinvitations()
+        }))
+    
 }
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +121,8 @@ document.getElementById('inviteuser').addEventListener('submit', (event) => {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({teamname,
-            invitee
+            invitee,
+            email
         })
     }).then(response => response.json().then(data => console.log(data)))
 })
@@ -144,7 +167,7 @@ document.getElementById('loginform').addEventListener('submit', (event) => {
             })
     }
     else {
-        fetch('/emailappendingfunction', {
+        fetch('/emailappendingfunc', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

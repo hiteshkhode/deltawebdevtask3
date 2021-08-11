@@ -89,10 +89,10 @@ function createpoll(req, res) {
 function inviteuser(req, res) {
     emailtoinvite = req.body.invitee
     console.log('invite ran successfully ' + emailtoinvite + req.body.teamname)
-    var querytocreateinvitetable = "CREATE TABLE `invites" + emailtoinvite + "`(invitedteam VARCHAR(32) UNIQUE);"
+    var querytocreateinvitetable = "CREATE TABLE `invites" + emailtoinvite + "`(invitedteam VARCHAR(32) UNIQUE, status VARCHAR(10));"
     db.query(querytocreateinvitetable, (errortocreateinviteestable, result) => {
         if (errortocreateinviteestable) console.log(errortocreateinviteestable.sqlMessage)
-        var querytoappendtoinviteestable = "INSERT INTO `invites" + emailtoinvite + "` VALUES('" + req.body.teamname + req.body.email + "');"
+        var querytoappendtoinviteestable = "INSERT INTO `invites" + emailtoinvite + "` VALUES('" + req.body.teamname + req.body.email + "', 'pending');"
         db.query(querytoappendtoinviteestable, (errorinappendingtoinviteestable) => {
             if(errorinappendingtoinviteestable) console.log("errorininvite" + errorinappendingtoinviteestable.sqlMessage)
             else res.send({fallout: 'success'})
@@ -102,7 +102,7 @@ function inviteuser(req, res) {
 
 function refreshinvitations(req, res) {
     console.log('good until refreshinvitations')
-    querytogetinvites = "SELECT * FROM `invites" + req.body.email + "`;"
+    querytogetinvites = "SELECT invitedteam FROM `invites" + req.body.email + "` WHERE status='" + req.body.flag + "';"
     var arrayofinvites = []
     let counterone
     let countertwo = 0
@@ -121,28 +121,15 @@ function refreshingcreatedteams(req, res) {
         if(errtogetcreatedteams) console.log(errtogetcreatedteams.sqlMessage)
         res.send({result})
     })
-    // db.query(querytogetcreatedteams, (errtogetcreatedteams, result) => {
-    //     if(errtogetcreatedteams) console.log(errtogetcreatedteams.sqlMessage);
-    //     counterone = result.length
-    //     for (let i = 0; i < result.length; i++) {
-    //         arrayofcreatedpolls.push(result[i].pollid)
-    //         countertwo += 1
-    //     }
-    //     if(countertwo == counterone) {
-    //         // res.send({arrayofcreatedpolls})
-    //         var arraytosend = []
-    //         let firstcounter = 0;
-    //         for (let i = 0; i < arrayofcreatedpolls.length; i++) {
-    //             querytogetquestiontable = "SELECT * FROM `" + arrayofcreatedpolls[i] + "`;"
-    //             db.query(querytogetquestiontable, (erringettingquestiontables, result) => {
-    //                 if(erringettingquestiontables) console.log(erringettingquestiontables.sqlMessage)
-    //                 arraytosend.push(result)
-    //                 firstcounter += 1
-    //                 if(firstcounter === arrayofcreatedpolls.length) res.send(arraytosend)
-    //             })
-    //         }
-    //     }
-    // })
+}
+function invititionadder(req, res){
+    email = req.body.email;
+    teamtoadd = req.body.invititionteamtoadd
+    querytoaddtoinvites = 'UPDATE `invites' + email + '` SET status="accepted" WHERE invitedteam="' + teamtoadd + '";'
+    db.query(querytoaddtoinvites, (errtoaddtoinvites) => {
+        if(querytoaddtoinvites) console.log(querytoaddtoinvites.sqlMessage)
+        res.send({fallout: 'success'})
+    })
 }
 
 app.get('/createsignuptable', createsignuptable);
@@ -153,6 +140,7 @@ app.post('/createpoll', createpoll);
 app.post('/inviteuser', inviteuser);
 app.post('/refreshinvitations', refreshinvitations);
 app.post('/refreshingcreatedteams', refreshingcreatedteams)
+app.post('/invititionadder', invititionadder)
 
 app.listen('3001', (req, res) => {
     console.log('server started at 3001')

@@ -34,8 +34,8 @@ body{
     flex-grow: 15;
     padding: 2rem 2rem 2rem 2rem;
 }
-#createdteams{
-    height: 30%;
+#createdteams, #acceptedteams{
+    height: 20%;
     border-style: solid;
 }
 #invitition{
@@ -69,7 +69,7 @@ body{
     right: 0.5em;
     width: 5%;
 }
-.invitedteams, .createdteamtiles{
+.invitedteams, .createdteamtiles, .acceptedteamtiles{
     width: 100px;
     height: 100px;
     background-color: blueviolet;
@@ -78,7 +78,7 @@ body{
     display: flex;
     flex-direction: column;
 }
-#invitedteams, #createdteamtiles{
+#invitedteams, #createdteamtiles, #acceptedteamtiles{
     display: flex;
 }
 /* THIS CODE FOR THE LOGIN FORM /////////////////////////////////////////////////////////////// */
