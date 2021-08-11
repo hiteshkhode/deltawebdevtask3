@@ -103,7 +103,18 @@ function teamcreationformlaunch() {
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  THIS IF FOR TEAMCREATIONFORM
 function teamcreationform() {
-    fetch('/teamcreation')
+    var teamname = document.getElementById('teamname').value
+    document.getElementById('teamcreationform').addEventListener('submit', (event) => {
+        event.preventDefault();
+        console.log('good until this')
+        // fetch('/teamcreation', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({email, teamname}),
+        //     })
+})
 }
 
 
@@ -127,9 +138,43 @@ document.getElementById('loginform').addEventListener('submit', (event) => {
     email = document.getElementById('email').value;
     password = document.getElementById('password').value;
     if (statuschecker === 'Login') {
-        fetching('/login', email, password);
+        // fetching('/login', email, password);
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({email, password}),
+            }).then((response) => {
+                response.json().then((data) => {
+                    if (data.status == '!exist') document.getElementById('msg').innerText = 'USER DOESNT EXIST'
+                    if (data.status == 'invalidcredentials') document.getElementById('msg').innerText = 'Invalid credentials'
+                    if (data.status == 'ok'){
+                        document.getElementById('msg').innerText = 'loggedin successfully'
+                        document.getElementsByClassName('signinbox')[0].setAttribute('id', 'none')
+                        document.getElementById('heading').innerText = 'YOUR LOGIN HAS BEEN SUCCESSFUL .....!'
+                        refreshinvitations();
+                        refreshingcreatedteams();
+                    }
+                })
+            })
     }
-    else fetching('/emailappendingfunc', email, password)
+    else {
+        fetch('/emailappendingfunction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({email, password}),
+            }).then((response) => {
+                response.json().then((data) => {
+                    if(data.status == 'ok'){
+                        inchoser(document.getElementById('login'))
+                        document.getElementById('msg').innerText = 'regestered successfully, now you can log in'
+                    }
+                })
+            })
+    }
 })
 document.getElementById('pollcreationform').addEventListener('submit', (event) => {
     event.preventDefault();
@@ -162,34 +207,34 @@ document.getElementById('inviteuser').addEventListener('submit', (event) => {
     })
 })
 
-function fetching(endpoint, email, password) {
-    fetch(endpoint,{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({email, password}),
-        })
-        .then(response => response.json().then((data) => {
-                                            if (data.status == 'invalidcredentials') document.getElementById('msg').innerText = 'Invalid credentials'
-                                            else if (data.status == '!exist') {
-                                                if (endpoint === '/login') document.getElementById('msg').innerHTML = "Email doesn't exist"
-                                                else document.getElementById('msg').innerHTML = "Email exist"
-                                            }
-                                            else{
-                                                if (endpoint === '/login'){
-                                                    document.getElementById('msg').innerText = 'loggedin successfully'
-                                                    document.getElementsByClassName('signinbox')[0].setAttribute('id', 'none')
-                                                    document.getElementById('heading').innerText = 'YOUR LOGIN HAS BEEN SUCCESSFUL .....!'
-                                                    refreshinvitations();
-                                                    // refreshingcreatedteams();
-                                                }
+// async function fetching(endpoint, email, password) {
+//     fetch(endpoint,{
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({email, password}),
+//         })
+//         .then(response => response.json().then((data) => {
+//                                             if (data.status == 'invalidcredentials') document.getElementById('msg').innerText = 'Invalid credentials'
+//                                             else if (data.status == '!exist') {
+//                                                 if (endpoint === '/login') document.getElementById('msg').innerHTML = "Email doesn't exist"
+//                                                 else document.getElementById('msg').innerHTML = "Email exist"
+//                                             }
+//                                             else{
+//                                                 if (endpoint === '/login'){
+//                                                     document.getElementById('msg').innerText = 'loggedin successfully'
+//                                                     document.getElementsByClassName('signinbox')[0].setAttribute('id', 'none')
+//                                                     document.getElementById('heading').innerText = 'YOUR LOGIN HAS BEEN SUCCESSFUL .....!'
+//                                                     refreshinvitations();
+//                                                     refreshingcreatedteams();
+//                                                 }
 
-                                                else{
-                                                    inchoser(document.getElementById('login'))
-                                                    document.getElementById('msg').innerText = 'regestered successfully, now you can log in'
-                                                }
-                                            }
-        }));
+//                                                 else{
+//                                                     inchoser(document.getElementById('login'))
+//                                                     document.getElementById('msg').innerText = 'regestered successfully, now you can log in'
+//                                                 }
+//                                             }
+//         }));
     
-}
+// }

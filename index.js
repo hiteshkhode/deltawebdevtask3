@@ -46,15 +46,22 @@ function login(req, res) {
     var passwordparsed = crypto.createHash('md5').update(req.body.password).digest('hex');
     var querytologin = `SELECT passwordofemailid FROM signupmap WHERE emailid = '${req.body.email}';`
     db.query(querytologin, (errinlogin, result) => {
-        // if(`${passwordparsed}` == result[0]['passwordofemailid']) res.sendFile(__dirname + '/public/successfullogin.html')
         if (errinlogin) console.log(errinlogin.sqlMessage)
         else if (result[0] == undefined) res.send({ status: '!exist' })
-        else if (`${passwordparsed}` == result[0]['passwordofemailid']) res.send({ userid, passwordparsed, status: 'ok' })
+        else if (passwordparsed == result[0]['passwordofemailid']) res.send({passwordparsed, status: 'ok' })
         else res.send({ status: 'invalidcredentials' })
     })
 }
 function teamcreation(params) {
-    querytocreateteam = 'CREATE TABLE teams();'
+    querytocreateteam = 'CREATE TABLE teams( admin NVARCHARA(320), teamname VARCHAR(32));'
+    db.query(querytocreateteam, (errorincreatingteam, result) => {
+        if(errorincreatingteam) console.log(errorincreatingteam.sqlMessage)
+        querytoaddadminandteamname = 'INSERT INTO teams VALUES(' + req.body.email + ', ' + req.body.teamname + ');'
+        db.query(querytoaddadminandteamname, (errtoaddadminandteamname, result) => {
+            if(errtoaddadminandteamname) console.log(errtoaddadminandteamname.sqlMessage)
+            else res.send({fallout: 'success'})
+        })
+    })
 }
 function createpolltable(question) {
     questionhash = crypto.createHash('md5').update(question).digest('hex');
