@@ -39,6 +39,10 @@ function emailappendingfunc(req, res) {
     var querytoaddemailandpass = "INSERT INTO signupmap (emailid, passwordofemailid) VALUES('" + emailidparsed + "', '" + passwordparsed + "');";
     db.query(querytoaddemailandpass, (errinemailaddition, result) => {
         if (errinemailaddition) res.send({ status: '!exist' })
+        querytocreatevotedpolls = 'CREATE TABLE `' + emailidparsed + 'voted`(votedpolls VARCHAR(32))'
+        db.query(querytocreatevotedpolls, (errtocreatevotedpolls, result) => {
+            if(errtocreatevotedpolls) console.log(errtocreatevotedpolls.sqlMessage)
+        })
         res.send({ status: 'ok' })
     })
 }
@@ -49,7 +53,9 @@ function login(req, res) {
     db.query(querytologin, (errinlogin, result) => {
         if (errinlogin) console.log(errinlogin.sqlMessage)
         else if (result[0] == undefined) res.send({ status: '!exist' })
-        else if (passwordparsed == result[0]['passwordofemailid']) res.send({passwordparsed, status: 'ok' })
+        else if (passwordparsed == result[0]['passwordofemailid']) {
+            res.send({passwordparsed, status: 'ok' })
+        }
         else res.send({ status: 'invalidcredentials' })
     })
 }
@@ -69,8 +75,8 @@ function teamcreation(req, res) {
         if(errincreatingpollstable) console.log(errincreatingpollstable.sqlMessage)
     })
 }
-function createpolltable(question) {
-    questionhash = crypto.createHash('md5').update(question).digest('hex');
+function createpolltable(question, userid) {
+    questionhash = crypto.createHash('md5').update(question + userid).digest('hex');
     const querytocreatepolltable = 'CREATE TABLE `' + questionhash + '`(`' + question + '` VARCHAR(200), vote INT);'
     db.query(querytocreatepolltable, (errorincreatepolltable, result) => {
         if (errorincreatepolltable) console.log(errorincreatepolltable.sqlMessage)
@@ -78,8 +84,8 @@ function createpolltable(question) {
 }
 function createpoll(req, res) {
     userid = req.body.email
-    var questionhash = crypto.createHash('md5').update(req.body.question).digest('hex');
-    createpolltable(req.body.question)
+    var questionhash = crypto.createHash('md5').update(req.body.question + userid).digest('hex');
+    createpolltable(req.body.question, userid)
     db.query('INSERT INTO `' + req.body.teamnameandmail + '` values("' + questionhash + '")')
     for (let i = 0; i < req.body.optioninput.length - 1; i++) {
         var querytoappendpolloptions = 'INSERT INTO `' + questionhash + '` VALUES("' + req.body.optioninput[i] + '", 0);'
@@ -135,7 +141,6 @@ function invititionadder(req, res){
 }
 function getpolls(req, res){ 
     quertytogethashofpolls = 'SELECT * FROM `' + req.body.clickeddivid + '`;'
-    console.log(quertytogethashofpolls)
     db.query(quertytogethashofpolls, (errtogethashofpolls, result) => {
         if(errtogethashofpolls) console.log(errtogethashofpolls.sqlMessage)
         var arrayofhashedquestions = []
@@ -154,17 +159,58 @@ function getpolls(req, res){
         }
     })
 }
+// function checkifalredyvoted(email, poll, res){
+//     querytocheckifalredyvoted = 'SELECT * FROM `' + req.body.email + 'voted` WHERE votedpoll = "' + poll + '";'
+//     db.query(querytocheckifalredyvoted, (err, result) => {
+//         if(err) {
+//             console.log(err.sqlMessage)
+//             res.send({status: "already voted"})
+//         }
+//     })
+// }
 function vote(req, res){
-    querytogetquestion = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS  WHERE TABLE_NAME = "'+ req.body.poll + '" ORDER BY ORDINAL_POSITION ;'
-    db.query(querytogetquestion, (errtogetquestion, result) => {
-        if(errtogetquestion) console.log(errtogetquestion.sqlMessage);
-        console.log(result)
-        querytoaddvote = 'UPDATE `' + req.body.poll + '` SET vote = vote + 1 WHERE ' + result[0].COLUMN_NAME + ' = "' + req.body.optionchosen + '";'
-        db.query(querytoaddvote, (errtoaddvote, result) => {
-            if(errtoaddvote) console.log(errtoaddvote.sqlMessage)
-            
-        })
-        
+    querytocheckifalredyvoted = 'SELECT * FROM `' + req.body.email + 'voted` WHERE votedpolls = "' + req.body.poll + '";'
+    console.log(querytocheckifalredyvoted)
+    db.query(querytocheckifalredyvoted, (err, resultt) => {
+        if(typeof(resultt[0]) == 'undefined') {
+            console.log('entered in if loop')
+            querytogetquestion = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS  WHERE TABLE_NAME = "'+ req.body.poll + '" ORDER BY ORDINAL_POSITION ;'
+            db.query(querytogetquestion, (errtogetquestion, result) => {
+                if(errtogetquestion) console.log(errtogetquestion.sqlMessage);
+                console.log(result)
+                querytoaddvote = 'UPDATE `' + req.body.poll + '` SET vote = vote + 1 WHERE `' + result[0].COLUMN_NAME + '` = "' + req.body.optionchosen + '";'
+                db.query(querytoaddvote, (errtoaddvote, result) => {
+                    if(errtoaddvote) console.log(errtoaddvote.sqlMessage)
+                })
+                querytoaddtovoted = 'INSERT INTO `' + req.body.email + 'voted` VALUES("' + req.body.poll + '");'
+                db.query(querytoaddtovoted, (err, result) => {
+                    if(err) console.log(err.sqlMessage)
+                })
+            })
+        }
+        else{
+            res.send({status: "already voted"})
+        }
+    })
+    // checkifalredyvoted(req.body.email, req.body.poll, res)
+    // querytogetquestion = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS  WHERE TABLE_NAME = "'+ req.body.poll + '" ORDER BY ORDINAL_POSITION ;'
+    // db.query(querytogetquestion, (errtogetquestion, result) => {
+    //     if(errtogetquestion) console.log(errtogetquestion.sqlMessage);
+    //     console.log(result)
+    //     querytoaddvote = 'UPDATE `' + req.body.poll + '` SET vote = vote + 1 WHERE `' + result[0].COLUMN_NAME + '` = "' + req.body.optionchosen + '";'
+    //     db.query(querytoaddvote, (errtoaddvote, result) => {
+    //         if(errtoaddvote) console.log(errtoaddvote.sqlMessage)
+    //     })
+    //     querytoaddtovoted = 'INSERT INTO `' + req.body.email + 'voted` VALUES("' + req.body.poll + '");'
+    //     db.query(querytoaddtovoted, (err, result) => {
+    //         if(err) console.log(err.sqlMessage)
+    //     })
+    // })
+}
+function endpoll(req, res){
+    querytorenamevotecol = 'ALTER TABLE `' + req.body.poll + '` RENAME COLUMN vote TO ended;'
+    db.query(querytorenamevotecol, (err, result) => {
+        if(err) console.log(err.sqlMessage)
     })
 }
 
@@ -179,6 +225,7 @@ app.post('/refreshingcreatedteams', refreshingcreatedteams)
 app.post('/invititionadder', invititionadder);
 app.post('/getpolls', getpolls)
 app.post('/vote', vote)
+app.post('/endpoll', endpoll)
 
 app.listen('3001', (req, res) => {
     console.log('server started at 3001')

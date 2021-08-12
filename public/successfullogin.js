@@ -69,6 +69,7 @@ function refreshingacceptedteams() {
 }
 function memberadder(event){
     clickeddivid = event.target.id
+    document.getElementById('polls').innerHTML = '';
     invititionteamtoadd = event.target.innerText
     console.log(event.target.parentNode.getAttribute('id'))
     if(event.target.parentNode.getAttribute('id') == 'invitedteams'){
@@ -96,6 +97,18 @@ function memberadder(event){
     }
     if(event.target.parentNode.getAttribute('id') == 'createdteamtiles'){
         document.getElementById('teamnameandmail').innerText = event.target.innerText
+        fetch('/getpolls', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                email, clickeddivid
+            })
+        }).then(response => response.json().then((data) => {
+            appendingpolltoworkspace(data.arrayofhashedquestions, data.pollstosend)
+            addendingbuttons()
+        }))
     }
 }
 function appendingpolltoworkspace(arrayofhashedquestions, pollstosend){
@@ -110,6 +123,7 @@ function appendingpolltoworkspace(arrayofhashedquestions, pollstosend){
     for (let i = 0; i < pollstosend.length; i++) {
         for (let j = 0; j < pollstosend[i].length; j++) {
             if(j == 0){
+                optioncheck = []
                 for (var perticularpoll in pollstosend[i][j]) {
                     question = perticularpoll
                     document.getElementsByClassName('perticularpoll')[i].innerHTML = '<h3>' + question + '</h3>'
@@ -119,13 +133,37 @@ function appendingpolltoworkspace(arrayofhashedquestions, pollstosend){
             var div = document.createElement('div');
             div.className = 'option';
             div.id = pollstosend[i][j][question]
-            div.innerText = pollstosend[i][j][question]
+            if(pollstosend[i][j].ended != undefined)div.innerText = pollstosend[i][j][question] + ' (' + pollstosend[i][j].ended + ')';
+            else div.innerText = pollstosend[i][j][question]
             div.setAttribute('onclick', 'votecounter(event)')
             document.getElementsByClassName('perticularpoll')[i].appendChild(div);
             // document.getElementsByClassName('perticularpoll')[i].innerHTML += pollstosend[i][j][question] + '<br>'
         }
     }
 }
+function addendingbuttons(){
+    console.log('addendingbuttons is running')
+    var polldivs = document.getElementsByClassName('perticularpoll')
+    for (let i = 0; i < polldivs.length; i++) {
+        var button = document.createElement('button')
+        button.setAttribute('onclick', 'endpoll(event)')
+        button.innerText = 'END POLL'
+        polldivs[i].appendChild(button)
+    }
+}
+function endpoll(event){
+    poll = event.target.parentNode.id
+    fetch('/endpoll', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            poll, email
+        })
+    })
+}
+
 function votecounter(event){
     console.log(event.target.parentNode.innerText)
     votedquestion = event.target.parentNode.innerText
