@@ -31,12 +31,23 @@ body{
 #content{
     background-color: rgb(253, 208, 208);
     border-style: solid;
-    flex-grow: 15;
+    flex-grow: 1;
     padding: 2rem 2rem 2rem 2rem;
+}
+#contentandworkspace{
+    display: flex;
+    flex-grow: 15;
+    padding: 0;
 }
 #createdteams, #acceptedteams{
     height: 20%;
     border-style: solid;
+}
+#workspace{
+    flex-grow: 4;
+    background-color: rgb(253, 208, 208);
+    border-style: solid;
+    border-left: 0;
 }
 #invitition{
     margin-top: 30px;
@@ -70,8 +81,8 @@ body{
     width: 5%;
 }
 .invitedteams, .createdteamtiles, .acceptedteamtiles{
-    width: 100px;
-    height: 100px;
+    width: fit-content;
+    height: 1rem;
     background-color: blueviolet;
 }
 #invitition, #createdteams{
@@ -80,6 +91,7 @@ body{
 }
 #invitedteams, #createdteamtiles, #acceptedteamtiles{
     display: flex;
+    flex-direction: column;
 }
 /* THIS CODE FOR THE LOGIN FORM /////////////////////////////////////////////////////////////// */
 div{

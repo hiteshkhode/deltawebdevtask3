@@ -1,23 +1,11 @@
 const pollcreationform = document.getElementsByClassName('pollcreationform')
 var counterofoptions = 0;
 const pollform = '<form action="/createpoll" method="post" id="pollcreationform">Question:<input type="text" name="question" id="pollcreationquestion">Options:<div id="options"><input type="text" name="optioninput" class="optioninput"></div><span id="optionaddition" onclick="addoption()">Add option</span><button type="submit">SUBMIT</button></form>'
-var email, password
+var email, password, teamname
 
 function navbarhideshower(){
     if (document.getElementsByClassName('navbar')[0].getAttribute('id') == 'none') document.getElementsByClassName('navbar')[0].setAttribute('id', 'navbar');
     else document.getElementsByClassName('navbar')[0].setAttribute('id', 'none');
-}
-function pollcreationformlaunch(){
-    counterofoptions = 0;
-    if (pollcreationform[0].getAttribute('id') == 'none'){
-        // document.querySelector('body').style.opacity = 0.3
-        pollcreationform[0].setAttribute('id', 'pollcreation');
-    }
-    else{
-        pollcreationform[0].setAttribute('id', 'none');
-        pollcreationform[0].removeChild(document.getElementById('pollcreationform'))
-        pollcreationform[0].innerHTML += pollform
-    }
 }
 function addoption() {
     var input = document.createElement("input");
@@ -36,7 +24,10 @@ function refreshinvitations() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({email, flag})}).then(response => response.json().then(data => appendtodivtoarea(data.result, 'invitedteams', 'invitedteam')))
+        body: JSON.stringify({email, flag})}).then(response => response.json().then((data) => {
+            console.log(data)
+            appendtodivtoarea(data.result, 'invitedteams', 'invitedteam', 'teamnamewithmail')
+        }))
 
 }
 function refreshingcreatedteams() {
@@ -49,30 +40,17 @@ function refreshingcreatedteams() {
         body: JSON.stringify({
             email
         })
-    }).then(response => response.json().then(data => appendtodivtoarea(data.result, 'createdteamtiles', 'teamname')))
+    }).then(response => response.json().then(data => appendtodivtoarea(data.result, 'createdteamtiles', 'teamname', 'teamnamewithmail')))
 }
-function appendtodivtoarea(arrayofinvites, divid, thirdparam) {
-    console.log(arrayofinvites)
+function appendtodivtoarea(arrayofinvites, divid, thirdparam, fourthparam) {
+    console.log(arrayofinvites, fourthparam)
     for (let i = 0; i < arrayofinvites.length; i++) {
         var div = document.createElement('div');
         div.className = divid;
+        div.id = arrayofinvites[i][fourthparam]
         div.innerText = arrayofinvites[i][thirdparam];
         div.setAttribute('onclick', 'memberadder(event)')
         document.getElementById(divid).appendChild(div);
-    }
-}
-function memberadder(event){
-    invititionteamtoadd = event.target.innerText
-    if(event.target.parentNode.getAttribute('id') == 'invitedteams'){
-        fetch('/invititionadder', {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                invititionteamtoadd, email
-            })
-        }).then(response => response.json().then(refreshingacceptedteams()))
     }
 }
 function refreshingacceptedteams() {
@@ -85,10 +63,42 @@ function refreshingacceptedteams() {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({email, flag})}).then(response => response.json().then((data) => {
-            appendtodivtoarea(data.result, 'acceptedteamtiles', 'invitedteam');
+            appendtodivtoarea(data.result, 'acceptedteamtiles', 'invitedteam', 'teamnamewithmail');
             refreshinvitations()
         }))
-    
+}
+function memberadder(event){
+    invititionteamtoadd = event.target.innerText
+    console.log(event.target.parentNode.getAttribute('id'))
+    if(event.target.parentNode.getAttribute('id') == 'invitedteams'){
+        fetch('/invititionadder', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                invititionteamtoadd, email
+            })
+        }).then(response => response.json().then(refreshingacceptedteams()))
+    }
+    if(event.target.parentNode.getAttribute('id') == 'acceptedteamtiles'){
+        document.getElementById('teamnameandmail').innerText = event.target.innerText
+        fetch('/getpolls', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                email
+            })
+        }).then(response => response.json().then(data => appendingpolltoworkspace(data)))
+    }
+    if(event.target.parentNode.getAttribute('id') == 'createdteamtiles'){
+        document.getElementById('teamnameandmail').innerText = event.target.innerText
+    }
+}
+function appendingpolltoworkspace(data){
+    console.log(data)
 }
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +111,8 @@ function teamcreationformlaunch() {
 }
 document.getElementById('teamcreationform').addEventListener('submit', (event) => {
     event.preventDefault();
-    var teamname = document.getElementById('teamname').value
+    teamname = document.getElementById('teamname').value
+    console.log(teamname)
     fetch('/teamcreation', {
         method: 'POST',
         headers: {
@@ -113,7 +124,6 @@ document.getElementById('teamcreationform').addEventListener('submit', (event) =
 
 document.getElementById('inviteuser').addEventListener('submit', (event) => {
     event.preventDefault();
-    var teamname = document.getElementById('teamname').value
     var invitee = document.getElementById('guest').value
     fetch('/inviteuser', {
         method: 'POST',
@@ -126,6 +136,44 @@ document.getElementById('inviteuser').addEventListener('submit', (event) => {
         })
     }).then(response => response.json().then(data => console.log(data)))
 })
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// THIS IS CODE FOR POLL CREATION FORM// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function pollcreationformlaunch(){
+    counterofoptions = 0;
+    if (pollcreationform[0].getAttribute('id') == 'none'){
+        // document.querySelector('body').style.opacity = 0.3
+        pollcreationform[0].setAttribute('id', 'pollcreation');
+    }
+    else{
+        pollcreationform[0].setAttribute('id', 'none');
+        pollcreationform[0].removeChild(document.getElementById('pollcreationform'))
+        pollcreationform[0].innerHTML += pollform
+    }
+}
+
+document.getElementById('pollcreationform').addEventListener('submit', (event) => {
+    event.preventDefault();
+    var teamnameandmail = document.getElementById('teamnameandmail').innerText
+    jsonforpollcreation = {}
+    jsonforpollcreation.question = document.getElementById('pollcreationquestion').value
+    jsonforpollcreation.email = email
+    jsonforpollcreation.optioninput = [];
+    jsonforpollcreation.teamnameandmail = teamnameandmail;
+    console.log(jsonforpollcreation.teamname)
+    for (let i = 0; i < document.getElementsByClassName('optioninput').length; i++) {
+        jsonforpollcreation.optioninput.push(document.getElementsByClassName('optioninput')[i].value)
+    }
+    jsonstring =  JSON.stringify(jsonforpollcreation)
+    fetch('/createpoll', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: jsonstring});
+});
+
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  THIS IS CODE FOR LOGIN FORM
@@ -183,23 +231,6 @@ document.getElementById('loginform').addEventListener('submit', (event) => {
             })
     }
 })
-document.getElementById('pollcreationform').addEventListener('submit', (event) => {
-    event.preventDefault();
-    jsonforpollcreation = {}
-    jsonforpollcreation.question = document.getElementById('pollcreationquestion').value
-    jsonforpollcreation.email = email
-    jsonforpollcreation.optioninput = [];
-    for (let i = 0; i < document.getElementsByClassName('optioninput').length; i++) {
-        jsonforpollcreation.optioninput.push(document.getElementsByClassName('optioninput')[i].value)
-    }
-    jsonstring =  JSON.stringify(jsonforpollcreation)
-    fetch('/createpoll', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: jsonstring,});
-});
 
 // async function fetching(endpoint, email, password) {
 //     fetch(endpoint,{
