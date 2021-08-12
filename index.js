@@ -3,6 +3,7 @@ const mysql = require('mysql');
 const crypto = require('crypto')
 const path = require('path');
 const bodyParser = require('body-parser');
+const { Console } = require('console');
 var userid;
 
 var userid
@@ -132,8 +133,39 @@ function invititionadder(req, res){
         res.send({fallout: 'success'})
     })
 }
-function getpolls(req, res){
-    quertytogethashofpolls = 'SELECT INVITES'
+function getpolls(req, res){ 
+    quertytogethashofpolls = 'SELECT * FROM `' + req.body.clickeddivid + '`;'
+    console.log(quertytogethashofpolls)
+    db.query(quertytogethashofpolls, (errtogethashofpolls, result) => {
+        if(errtogethashofpolls) console.log(errtogethashofpolls.sqlMessage)
+        var arrayofhashedquestions = []
+        for (let i = 0; i < result.length; i++) {
+            arrayofhashedquestions.push(result[i].hashedquestions)
+        }
+        console.log(arrayofhashedquestions)
+        pollstosend = []
+        for (let j = 0; j < arrayofhashedquestions.length; j++) {
+            quertytogetpollsfromhash = 'SELECT * FROM `' + arrayofhashedquestions[j] + '`;'
+            db.query(quertytogetpollsfromhash, (errtogetpollsfromhash, result) => {
+                if(errtogetpollsfromhash) console.log(errtogetpollsfromhash.sqlMessage)
+                pollstosend.push(result);
+                if(pollstosend.length == arrayofhashedquestions.length) res.send({arrayofhashedquestions, pollstosend})
+            })
+        }
+    })
+}
+function vote(req, res){
+    querytogetquestion = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS  WHERE TABLE_NAME = "'+ req.body.poll + '" ORDER BY ORDINAL_POSITION ;'
+    db.query(querytogetquestion, (errtogetquestion, result) => {
+        if(errtogetquestion) console.log(errtogetquestion.sqlMessage);
+        console.log(result)
+        querytoaddvote = 'UPDATE `' + req.body.poll + '` SET vote = vote + 1 WHERE ' + result[0].COLUMN_NAME + ' = "' + req.body.optionchosen + '";'
+        db.query(querytoaddvote, (errtoaddvote, result) => {
+            if(errtoaddvote) console.log(errtoaddvote.sqlMessage)
+            
+        })
+        
+    })
 }
 
 app.get('/createsignuptable', createsignuptable);
@@ -145,7 +177,8 @@ app.post('/inviteuser', inviteuser);
 app.post('/refreshinvitations', refreshinvitations);
 app.post('/refreshingcreatedteams', refreshingcreatedteams)
 app.post('/invititionadder', invititionadder);
-app.post('getpolls', getpolls)
+app.post('/getpolls', getpolls)
+app.post('/vote', vote)
 
 app.listen('3001', (req, res) => {
     console.log('server started at 3001')
