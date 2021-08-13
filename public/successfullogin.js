@@ -25,7 +25,6 @@ function refreshinvitations() {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({email, flag})}).then(response => response.json().then((data) => {
-            console.log(data)
             appendtodivtoarea(data.result, 'invitedteams', 'invitedteam', 'teamnamewithmail')
         }))
 
@@ -43,7 +42,6 @@ function refreshingcreatedteams() {
     }).then(response => response.json().then(data => appendtodivtoarea(data.result, 'createdteamtiles', 'teamname', 'teamnamewithmail')))
 }
 function appendtodivtoarea(arrayofinvites, divid, thirdparam, fourthparam) {
-    console.log(arrayofinvites, fourthparam)
     if(arrayofinvites !== undefined){
         for (let i = 0; i < arrayofinvites.length; i++) {
             var div = document.createElement('div');
@@ -73,7 +71,6 @@ function memberadder(event){
     clickeddivid = event.target.id
     document.getElementById('polls').innerHTML = '';
     invititionteamtoadd = event.target.innerText
-    console.log(event.target.parentNode.getAttribute('id'))
     if(event.target.parentNode.getAttribute('id') == 'invitedteams'){
         document.getElementsByClassName('sendinvititions')[0].setAttribute('id', 'none')
         fetch('/invititionadder', {
@@ -89,6 +86,7 @@ function memberadder(event){
     if(event.target.parentNode.getAttribute('id') == 'acceptedteamtiles'){
         document.getElementsByClassName('sendinvititions')[0].setAttribute('id', 'none')
         document.getElementById('teamnameandmail').innerText = event.target.innerText
+        document.getElementById('buttons').innerHTML = ''
         fetch('/getpolls', {
             method: 'POST',
             headers: {
@@ -102,6 +100,7 @@ function memberadder(event){
     if(event.target.parentNode.getAttribute('id') == 'createdteamtiles'){
         document.getElementsByClassName('sendinvititions')[0].setAttribute('id', 'inviteuser')
         document.getElementById('teamnameandmail').innerText = event.target.innerText
+        document.getElementById('buttons').innerHTML = '<button id="refreshbuttonforpolls" onclick="pollcreationformlaunch()">+ CREATE POLL</button>'
         fetch('/getpolls', {
             method: 'POST',
             headers: {
@@ -117,7 +116,6 @@ function memberadder(event){
     }
 }
 function appendingpolltoworkspace(arrayofhashedquestions, pollstosend){
-    console.log(arrayofhashedquestions, pollstosend)
     var question
     for (let i = 0; i < arrayofhashedquestions.length; i++) {
         var div = document.createElement('div');
@@ -147,7 +145,6 @@ function appendingpolltoworkspace(arrayofhashedquestions, pollstosend){
     }
 }
 function addendingbuttons(){
-    console.log('addendingbuttons is running')
     var polldivs = document.getElementsByClassName('perticularpoll')
     for (let i = 0; i < polldivs.length; i++) {
         var button = document.createElement('button')
@@ -170,7 +167,6 @@ function endpoll(event){
 }
 
 function votecounter(event){
-    console.log(event.target.parentNode.innerText)
     votedquestion = event.target.parentNode.innerText
     poll = event.target.parentNode.id
     optionchosen = event.target.id
@@ -196,14 +192,13 @@ function teamcreationformlaunch() {
 document.getElementById('teamcreationform').addEventListener('submit', (event) => {
     event.preventDefault();
     teamname = document.getElementById('teamname').value
-    console.log(teamname)
     fetch('/teamcreation', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({email, teamname})
-        }).then(response => response.json().then(data => console.log(data)))
+        })
     refreshinvitations();
     refreshingacceptedteams();
     refreshingcreatedteams();
@@ -223,7 +218,11 @@ document.getElementsByClassName('sendinvititions')[0].addEventListener('submit',
             invitee,
             email
         })
-    }).then(response => response.json().then(data => console.log(data)))
+    }).then(response => response.json().then((data) => {
+        console.log(data.fallout)
+        if(data.fallout === 'success') launchmsgbox("INVITITION SENT TO " + invitee)
+        else launchmsgbox("ALREADY INVITED " + invitee)
+        }))
 })
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,7 +249,6 @@ document.getElementById('pollcreationform').addEventListener('submit', (event) =
     jsonforpollcreation.email = email
     jsonforpollcreation.optioninput = [];
     jsonforpollcreation.teamnameandmail = clickeddivid;
-    console.log(jsonforpollcreation.teamnameandmail)
     for (let i = 0; i < document.getElementsByClassName('optioninput').length; i++) {
         jsonforpollcreation.optioninput.push(document.getElementsByClassName('optioninput')[i].value)
     }
@@ -332,7 +330,15 @@ document.getElementById('loginform').addEventListener('submit', (event) => {
             })
     }
 })
+
 function logout(){
     document.getElementsByClassName('bodyschild')[0].setAttribute('id', 'none')
     window.location.reload();
+}
+function launchmsgbox(messagetxt){
+    document.getElementsByClassName('msgbox')[0].setAttribute('id', 'msgbox');
+    document.getElementById('msgtxt').innerText = messagetxt;
+}
+function closemsgbox(){
+    document.getElementsByClassName('msgbox')[0].setAttribute('id', 'none')
 }

@@ -1,12 +1,26 @@
 #heading{
     color: rgb(250, 192, 159);
 }
+#dashboardheading{
+    margin-top: 0;
+}
 div{
     border-radius: 10px;
     padding: 0.5rem;
 }
 body{
     background-color: rgb(102, 36, 36);
+}
+.msgbox{
+    position: absolute;
+    width: 26%;
+    background-color: beige;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    margin-left: -13%;
+    top: 0;
+    padding: 1em;
 }
 #logout{
     position: absolute;
@@ -57,9 +71,9 @@ body{
 }
 #invitition{
     margin-top: 30px;
-    height: 30%;
+    height: 20%;
     border-style: solid;
-    overflow-x: scroll;
+    overflow-y: scroll;
 }
 .pollcreationform, #signinbox, .teamcreationform{
     display: flex;
@@ -87,7 +101,7 @@ body{
     display: flex;
     flex-direction: column;
 }
-#closebutton{
+#closebutton, #msgclose{
     position: absolute;
     right: 0.5em;
     top: 0.5em;

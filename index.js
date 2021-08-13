@@ -116,7 +116,10 @@ function inviteuser(req, res) {
         if (errortocreateinviteestable) console.log(errortocreateinviteestable.sqlMessage)
         var querytoappendtoinviteestable = "INSERT INTO `invites" + emailtoinvite + "` VALUES('" + req.body.teamname + "', 'pending', '" + req.body.teamname + req.body.email + "');"
         db.query(querytoappendtoinviteestable, (errorinappendingtoinviteestable) => {
-            if(errorinappendingtoinviteestable) console.log("errorininvite" + errorinappendingtoinviteestable.sqlMessage)
+            if(errorinappendingtoinviteestable) {
+                console.log("errorininvite" + errorinappendingtoinviteestable.sqlMessage)
+                res.send({fallout: 'already invited'})
+            }
             else res.send({fallout: 'success'})
             })
     })

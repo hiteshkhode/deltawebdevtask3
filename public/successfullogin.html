@@ -19,16 +19,20 @@
                 <li>three</li>
             </ul>
         </div> -->
+        <div id="none" class="msgbox">
+            <button id="msgclose" onclick="closemsgbox();">X</button>
+            <p id="msgtxt">this is where msgs would appear<p>
+        </div>
         <div id="contentandworkspace">
             <div id="content">
-                <h2>DASHBOARD</h2>
+                <h2 id="dashboardheading">DASHBOARD</h2>
                 <div id="acceptedteams">
                     <button onclick="refreshingacceptedteams()">REFRESH</button>
                     <div id="acceptedteamtiles"></div>
                 </div>
                 <div id="createdteams">
                     <button id="torefreshcreatedteams" onclick="refreshingcreatedteams()">REFRESH</button>
-                    <button onclick="teamcreationformlaunch()">+</button>
+                    <button onclick="teamcreationformlaunch()">+ CREATE TEAM</button>
                     <div id="createdteamtiles"></div>
                 </div>
                 <div id="invitition">
@@ -45,7 +49,7 @@
                 </form>
                 <h3>POLLS:</h3>
                 <div id="buttons">
-                    <button id="refreshbuttonforpolls" onclick="pollcreationformlaunch()">CREATE POLL+</button>
+                    
                 </div>
                 <div id="polls">
                     
