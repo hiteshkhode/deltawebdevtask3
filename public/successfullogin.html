@@ -8,6 +8,7 @@
     <title>login successful</title>
 </head>
 <body>
+    <button id="logout" onClick="window.location.reload();">LOGOUT</button>
     <h1 id="heading">YOU ARE YET TO LOG IN .......!</h1>
     <div id="bodyschild">
         <button id="navbarbtn" onclick="navbarhideshower()">></button>
@@ -20,6 +21,7 @@
         </div>
         <div id="contentandworkspace">
             <div id="content">
+                <h2>DASHBOARD</h2>
                 <div id="acceptedteams">
                     <button onclick="refreshingacceptedteams()">REFRESH</button>
                     <div id="acceptedteamtiles"></div>
@@ -43,8 +45,7 @@
                 </form>
                 <h3>POLLS:</h3>
                 <div id="buttons">
-                    <button id="refreshbuttonforpolls" onclick="refreshpolls()">REFRESH</button>
-                    <button id="refreshbuttonforpolls" onclick="pollcreationformlaunch()">+</button>
+                    <button id="refreshbuttonforpolls" onclick="pollcreationformlaunch()">CREATE POLL+</button>
                 </div>
                 <div id="polls">
                     
@@ -76,12 +77,11 @@
         <br>
         <form id="teamcreationform">
             Name Of the Team:
+            <br>
             <input type="teamname" id="teamname" />
+            <br>
             <button id="createteam" type="submit">CREATE TEAM</button>
         </form>
-        <div class="invite">
-            <h4 class="invite">INVITITIONS:</h4>
-        </div>
     </div>
 
     <!-- ////////////////////////////////////////////////////////////////////////////THIS IS CODE FOR THE SIGNUP DIALOGUE BOX -->

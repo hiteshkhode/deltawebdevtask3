@@ -202,6 +202,10 @@ document.getElementById('teamcreationform').addEventListener('submit', (event) =
         },
         body: JSON.stringify({email, teamname})
         }).then(response => response.json().then(data => console.log(data)))
+    refreshinvitations();
+    refreshingacceptedteams();
+    refreshingcreatedteams();
+    teamcreationformlaunch();
 })
 
 document.getElementsByClassName('sendinvititions')[0].addEventListener('submit', (event) => {
@@ -255,6 +259,8 @@ document.getElementById('pollcreationform').addEventListener('submit', (event) =
             'Content-Type': 'application/json',
         },
         body: jsonstring});
+    pollcreationformlaunch();
+    refreshingcreatedteams()
 });
 
 
@@ -323,51 +329,6 @@ document.getElementById('loginform').addEventListener('submit', (event) => {
             })
     }
 })
-
-// async function fetching(endpoint, email, password) {
-//     fetch(endpoint,{
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({email, password}),
-//         })
-//         .then(response => response.json().then((data) => {
-//                                             if (data.status == 'invalidcredentials') document.getElementById('msg').innerText = 'Invalid credentials'
-//                                             else if (data.status == '!exist') {
-//                                                 if (endpoint === '/login') document.getElementById('msg').innerHTML = "Email doesn't exist"
-//                                                 else document.getElementById('msg').innerHTML = "Email exist"
-//                                             }
-//                                             else{
-//                                                 if (endpoint === '/login'){
-//                                                     document.getElementById('msg').innerText = 'loggedin successfully'
-//                                                     document.getElementsByClassName('signinbox')[0].setAttribute('id', 'none')
-//                                                     document.getElementById('heading').innerText = 'YOUR LOGIN HAS BEEN SUCCESSFUL .....!'
-//                                                     refreshinvitations();
-//                                                     refreshingcreatedteams();
-//                                                 }
-
-//                                                 else{
-//                                                     inchoser(document.getElementById('login'))
-//                                                     document.getElementById('msg').innerText = 'regestered successfully, now you can log in'
-//                                                 }
-//                                             }
-//         }));
-    
-// }
-
-
-// function addbuttonstoinvite() {
-//     arrayofinvitetiles = document.getElementsByClassName('invitedteams')
-//     for (let i = 0; i < arrayofinvitetiles.length; i++) {
-//         var buttonone = document.createElement('button');
-//         var buttontwo = document.createElement('button');
-//         buttonone.innerText = 'Accept';
-//         buttonone.onclick = 'accept()'
-//         buttontwo.innerText = 'Decline';
-//         buttontwo.onclick = 'decline()'
-//         arrayofinvitetiles[i].appendChild(buttonone);
-//         arrayofinvitetiles[i].appendChild(buttontwo);
-//         console.log('addbutoon is running')
-//     }
-// }
+function logout(){
+    fetch('/')
+}

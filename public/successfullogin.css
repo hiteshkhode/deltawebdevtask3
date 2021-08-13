@@ -8,6 +8,11 @@ div{
 body{
     background-color: rgb(102, 36, 36);
 }
+#logout{
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
 #bodyschild{
     display: flex;
     height: 1000px;
@@ -42,6 +47,7 @@ body{
 #createdteams, #acceptedteams{
     height: 20%;
     border-style: solid;
+    overflow-y: scroll;
 }
 #workspace{
     flex-grow: 4;
@@ -53,6 +59,7 @@ body{
     margin-top: 30px;
     height: 30%;
     border-style: solid;
+    overflow-x: scroll;
 }
 .pollcreationform, #signinbox, .teamcreationform{
     display: flex;
@@ -64,6 +71,11 @@ body{
     left: 50%;
     margin-top: -15%;
     margin-left: -13%;
+}
+.teamcreationform{
+    align-items: center;
+    justify-content: center;
+    padding: 2em;
 }
 #pollcreationform{
     display: flex;
@@ -78,6 +90,7 @@ body{
 #closebutton{
     position: absolute;
     right: 0.5em;
+    top: 0.5em;
     width: 5%;
 }
 .invitedteams, .createdteamtiles, .acceptedteamtiles{
@@ -86,6 +99,7 @@ body{
     background-color: blueviolet;
 }
 #invitition, #createdteams{
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
 }
