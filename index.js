@@ -35,19 +35,33 @@ function createsignuptable(req, res) {
 function emailappendingfunc(req, res) {
     createsignuptable();
     var emailidparsed = req.body.email;
+    console.log(emailidparsed)
     var passwordparsed = crypto.createHash('md5').update(req.body.password).digest('hex');
-    var querytoaddemailandpass = "INSERT INTO signupmap (emailid, passwordofemailid) VALUES('" + emailidparsed + "', '" + passwordparsed + "');";
-    db.query(querytoaddemailandpass, (errinemailaddition, result) => {
-        if (errinemailaddition) res.send({ status: '!exist' })
-        querytocreatevotedpolls = 'CREATE TABLE `' + emailidparsed + 'voted`(votedpolls VARCHAR(32))'
-        db.query(querytocreatevotedpolls, (errtocreatevotedpolls, result) => {
-            if(errtocreatevotedpolls) console.log(errtocreatevotedpolls.sqlMessage)
-        })
-        res.send({ status: 'ok' })
+    var querytocheckifalredyregistered = 'SELECT passwordofemailid FROM signupmap WHERE emailid="' + req.body.email + '";'
+    db.query(querytocheckifalredyregistered, (err, result) => {
+        if(typeof(result[0]) == 'undefined'){
+            var querytoaddemailandpass = "INSERT INTO signupmap (emailid, passwordofemailid) VALUES('" + emailidparsed + "', '" + passwordparsed + "');";
+            console.log(querytoaddemailandpass)
+            db.query(querytoaddemailandpass, (errinemailaddition, result) => {
+                if (errinemailaddition) res.send({ status: '!exist' })
+                querytocreatevotedpolls = 'CREATE TABLE `' + emailidparsed + 'voted`(votedpolls VARCHAR(32))'
+                db.query(querytocreatevotedpolls, (errtocreatevotedpolls, result) => {
+                    if(errtocreatevotedpolls) console.log(errtocreatevotedpolls.sqlMessage)
+                })
+                res.send({ status: 'ok' })
+            })
+        }
+        else{
+            res.send({status: '!exist'})
+        }
     })
 }
 function login(req, res) {
     createsignuptable();
+    querytocreatevotedpolls = 'CREATE TABLE `' + req.body.email + 'voted`(votedpolls VARCHAR(32))'
+    db.query(querytocreatevotedpolls, (errtocreatevotedpolls, result) => {
+        if(errtocreatevotedpolls) console.log(errtocreatevotedpolls.sqlMessage)
+    })
     var passwordparsed = crypto.createHash('md5').update(req.body.password).digest('hex');
     var querytologin = `SELECT passwordofemailid FROM signupmap WHERE emailid = '${req.body.email}';`
     db.query(querytologin, (errinlogin, result) => {
@@ -172,6 +186,7 @@ function vote(req, res){
     querytocheckifalredyvoted = 'SELECT * FROM `' + req.body.email + 'voted` WHERE votedpolls = "' + req.body.poll + '";'
     console.log(querytocheckifalredyvoted)
     db.query(querytocheckifalredyvoted, (err, resultt) => {
+        // console.log(typeof(resultt) == 'undefined')
         if(typeof(resultt[0]) == 'undefined') {
             console.log('entered in if loop')
             querytogetquestion = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS  WHERE TABLE_NAME = "'+ req.body.poll + '" ORDER BY ORDINAL_POSITION ;'
@@ -192,20 +207,6 @@ function vote(req, res){
             res.send({status: "already voted"})
         }
     })
-    // checkifalredyvoted(req.body.email, req.body.poll, res)
-    // querytogetquestion = 'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS  WHERE TABLE_NAME = "'+ req.body.poll + '" ORDER BY ORDINAL_POSITION ;'
-    // db.query(querytogetquestion, (errtogetquestion, result) => {
-    //     if(errtogetquestion) console.log(errtogetquestion.sqlMessage);
-    //     console.log(result)
-    //     querytoaddvote = 'UPDATE `' + req.body.poll + '` SET vote = vote + 1 WHERE `' + result[0].COLUMN_NAME + '` = "' + req.body.optionchosen + '";'
-    //     db.query(querytoaddvote, (errtoaddvote, result) => {
-    //         if(errtoaddvote) console.log(errtoaddvote.sqlMessage)
-    //     })
-    //     querytoaddtovoted = 'INSERT INTO `' + req.body.email + 'voted` VALUES("' + req.body.poll + '");'
-    //     db.query(querytoaddtovoted, (err, result) => {
-    //         if(err) console.log(err.sqlMessage)
-    //     })
-    // })
 }
 function endpoll(req, res){
     querytorenamevotecol = 'ALTER TABLE `' + req.body.poll + '` RENAME COLUMN vote TO ended;'

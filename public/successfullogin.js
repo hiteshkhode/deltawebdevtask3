@@ -265,7 +265,12 @@ function inchoser(status) {
     }
     else {
         document.getElementsByClassName('username')[0].setAttribute('id', 'displaynone')
+        initializer()
     }
+}
+function initializer(){
+    document.getElementById('email').value = '';
+    document.getElementById('password').value = '';
 }
 document.getElementById('loginform').addEventListener('submit', (event) => {
     event.preventDefault();
@@ -287,8 +292,9 @@ document.getElementById('loginform').addEventListener('submit', (event) => {
                         document.getElementById('msg').innerText = 'loggedin successfully'
                         document.getElementsByClassName('signinbox')[0].setAttribute('id', 'none')
                         document.getElementById('heading').innerText = 'YOUR LOGIN HAS BEEN SUCCESSFUL .....!'
-                        // refreshinvitations();
-                        // refreshingcreatedteams();
+                        refreshinvitations();
+                        refreshingacceptedteams();
+                        refreshingcreatedteams();
                     }
                 })
             })
@@ -305,6 +311,9 @@ document.getElementById('loginform').addEventListener('submit', (event) => {
                     if(data.status == 'ok'){
                         inchoser(document.getElementById('login'))
                         document.getElementById('msg').innerText = 'regestered successfully, now you can log in'
+                    }
+                    if(data.status == '!exist'){
+                        document.getElementById('msg').innerText = 'User alredy exists'
                     }
                 })
             })
