@@ -86,7 +86,7 @@ function memberadder(event){
     if(event.target.parentNode.getAttribute('id') == 'acceptedteamtiles'){
         document.getElementsByClassName('sendinvititions')[0].setAttribute('id', 'none')
         document.getElementById('teamnameandmail').innerText = event.target.innerText
-        document.getElementById('buttons').innerHTML = '<h3>click on option to vote</h3>'
+        document.getElementById('buttons').innerHTML = '<h3>Click on an option to vote</h3>'
         fetch('/getpolls', {
             method: 'POST',
             headers: {
