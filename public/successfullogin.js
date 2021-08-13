@@ -86,7 +86,7 @@ function memberadder(event){
     if(event.target.parentNode.getAttribute('id') == 'acceptedteamtiles'){
         document.getElementsByClassName('sendinvititions')[0].setAttribute('id', 'none')
         document.getElementById('teamnameandmail').innerText = event.target.innerText
-        document.getElementById('buttons').innerHTML = ''
+        document.getElementById('buttons').innerHTML = '<h3>click on option to vote</h3>'
         fetch('/getpolls', {
             method: 'POST',
             headers: {
@@ -303,7 +303,7 @@ document.getElementById('loginform').addEventListener('submit', (event) => {
                     if (data.status == 'ok'){
                         document.getElementById('msg').innerText = 'loggedin successfully'
                         document.getElementsByClassName('signinbox')[0].setAttribute('id', 'none')
-                        document.getElementById('heading').innerText = 'YOUR LOGIN HAS BEEN SUCCESSFUL .....!'
+                        document.getElementById('heading').innerText = 'LOGGED IN SUCCESSFULLY .....!'
                         document.getElementsByClassName('bodyschild')[0].setAttribute('id', 'bodyschild')
                         refreshinvitations();
                         refreshingacceptedteams();

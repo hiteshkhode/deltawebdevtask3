@@ -83,7 +83,7 @@ body{
     position: fixed;
     top: 50%;
     left: 50%;
-    margin-top: -15%;
+    margin-top: -10%;
     margin-left: -13%;
 }
 .teamcreationform{
@@ -97,9 +97,32 @@ body{
     justify-content: center;
     margin: 10% 10% 10% 10%;
 }
+.perticularpoll{
+    border-style: solid;
+    margin-bottom: 20px;
+}
 #options{
     display: flex;
     flex-direction: column;
+}
+.option{
+    cursor: pointer;
+}
+#optionaddition{
+    display:inline-block;
+    color:#444;
+    border:1px solid #CCC;
+    background:#DDD;
+    cursor:pointer;
+    vertical-align:middle;
+    max-width: 100px;
+    padding: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+#optionaddition :hover{
+    color:red;
+    box-shadow: 0 0 5px -1px rgba(0,0,0,0.6);
 }
 #closebutton, #msgclose{
     position: absolute;

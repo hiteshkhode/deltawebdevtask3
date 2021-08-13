@@ -96,7 +96,7 @@ function createpoll(req, res) {
     createpolltable(req.body.question, userid)
     db.query('INSERT INTO `' + req.body.teamnameandmail + '` values("' + questionhash + '")')
     let cntr = 0;
-    for (let i = 0; i < req.body.optioninput.length - 1; i++) {
+    for (let i = 0; i < req.body.optioninput.length; i++) {
         var querytoappendpolloptions = 'INSERT INTO `' + questionhash + '` VALUES("' + req.body.optioninput[i] + '", 0);'
         db.query(querytoappendpolloptions, (errinappendingpolloptions, result) => {
         })
