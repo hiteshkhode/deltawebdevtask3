@@ -73,6 +73,7 @@ function memberadder(event){
     invititionteamtoadd = event.target.innerText
     console.log(event.target.parentNode.getAttribute('id'))
     if(event.target.parentNode.getAttribute('id') == 'invitedteams'){
+        document.getElementsByClassName('sendinvititions')[0].setAttribute('id', 'none')
         fetch('/invititionadder', {
             method: 'POST',
             headers: {
@@ -84,6 +85,7 @@ function memberadder(event){
         }).then(response => response.json().then(refreshingacceptedteams()))
     }
     if(event.target.parentNode.getAttribute('id') == 'acceptedteamtiles'){
+        document.getElementsByClassName('sendinvititions')[0].setAttribute('id', 'none')
         document.getElementById('teamnameandmail').innerText = event.target.innerText
         fetch('/getpolls', {
             method: 'POST',
@@ -96,6 +98,7 @@ function memberadder(event){
         }).then(response => response.json().then(data => appendingpolltoworkspace(data.arrayofhashedquestions, data.pollstosend)))
     }
     if(event.target.parentNode.getAttribute('id') == 'createdteamtiles'){
+        document.getElementsByClassName('sendinvititions')[0].setAttribute('id', 'inviteuser')
         document.getElementById('teamnameandmail').innerText = event.target.innerText
         fetch('/getpolls', {
             method: 'POST',
@@ -201,9 +204,10 @@ document.getElementById('teamcreationform').addEventListener('submit', (event) =
         }).then(response => response.json().then(data => console.log(data)))
 })
 
-document.getElementById('inviteuser').addEventListener('submit', (event) => {
+document.getElementsByClassName('sendinvititions')[0].addEventListener('submit', (event) => {
     event.preventDefault();
     var invitee = document.getElementById('guest').value
+    teamname = document.getElementById('teamnameandmail').innerText
     fetch('/inviteuser', {
         method: 'POST',
         headers: {
