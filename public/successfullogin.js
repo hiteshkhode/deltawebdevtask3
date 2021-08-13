@@ -178,7 +178,7 @@ function votecounter(event){
         body: JSON.stringify({
             poll, optionchosen, email
         })
-    })
+    }).then(response => response.json().then(data => launchmsgbox(data.fallout)))
 }
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

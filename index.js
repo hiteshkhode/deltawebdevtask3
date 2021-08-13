@@ -179,9 +179,10 @@ function vote(req, res){
                 db.query(querytoaddtovoted, (err, result) => {
                 })
             })
+            res.send({fallout: "Vote registered successfully"})
         }
         else{
-            res.send({status: "already voted"})
+            res.send({fallout: "Already voted"})
         }
     })
 }
