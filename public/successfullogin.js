@@ -198,7 +198,9 @@ document.getElementById('teamcreationform').addEventListener('submit', (event) =
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({email, teamname})
-        })
+        }).then(response => response.json().then((data) => {
+            launchmsgbox(data.fallout)
+        }))
     refreshinvitations();
     refreshingacceptedteams();
     refreshingcreatedteams();
@@ -258,7 +260,7 @@ document.getElementById('pollcreationform').addEventListener('submit', (event) =
         headers: {
             'Content-Type': 'application/json',
         },
-        body: jsonstring});
+        body: jsonstring}).then(response => response.json().then(data => launchmsgbox(data.fallout)));
     pollcreationformlaunch();
     refreshingcreatedteams()
 });
