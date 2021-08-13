@@ -92,14 +92,14 @@ function createpolltable(question, userid) {
 }
 function createpoll(req, res) {
     userid = req.body.email
-    var questionhash = crypto.createHash('md5').update(req.body.question[0] + userid).digest('hex');
-    createpolltable(req.body.question[0], userid)
+    var questionhash = crypto.createHash('md5').update(req.body.question + userid).digest('hex');
+    createpolltable(req.body.question, userid)
     querytoaddpoll = 'INSERT INTO `' + req.body.teamnameandmail + '` values("' + questionhash + '")'
     console.log(querytoaddpoll)
     db.query(querytoaddpoll, (err, result) => {
         if(err) console.log(err.sqlMessage)
     })
-    querytoaddquestiontotablecol = 'INSERT INTO `' + questionhash + '` VALUES("' + req.body.question[0] + '", 0)';
+    querytoaddquestiontotablecol = 'INSERT INTO `' + questionhash + '` VALUES("' + req.body.question + '", 0)';
     db.query(querytoaddquestiontotablecol, (err, result) => {
         if(err) console.log(err.sqlMessage)
     })

@@ -11,14 +11,6 @@
     <button id="logout" onClick="logout()">LOGOUT</button>
     <h1 id="heading">YOU ARE YET TO LOG IN .......!</h1>
     <div id="none" class="bodyschild">
-        <!-- <button id="navbarbtn" onclick="navbarhideshower()">></button>
-        <div id="none" class="navbar">
-            <ul>
-                <li>one</li>
-                <li>two</li>
-                <li>three</li>
-            </ul>
-        </div> -->
         <div id="none" class="msgbox">
             <button id="msgclose" onclick="closemsgbox();">X</button>
             <p id="msgtxt">this is where msgs would appear<p>
@@ -58,7 +50,7 @@
         </div>
     </div>
 
-    <!-- ////////////////////////////////////////////////////////////////////////////THIS IS CODE FOR THE TEAMCREATION DIALOGUE BOX -->
+    <!-- ////////////////////////////////////////////////////////////////////////////THIS IS CODE FOR THE POLLCREATION DIALOGUE BOX -->
 
     <div id="none" class="pollcreationform">
         <button type="close" id="closebutton" onclick="pollcreationformlaunch()">X</button>
@@ -77,7 +69,7 @@
     <!-- ////////////////////////////////////////////////////////////////////////////THIS IS CODE FOR THE TEAMCREATION DIALOGUE BOX -->
 
     <div id="none" class="teamcreationform">
-        <button type="close" id="closebutton" onclick="teamcreationformlaunch()">X</button>
+        <button type="close" id="closebuttonforteam" onclick="teamcreationformlaunch()">X</button>
         <br>
         <form id="teamcreationform">
             Name Of the Team:
@@ -118,27 +110,3 @@
     <script src="successfullogin.js"></script>
 </body>
 </html>
-
-
-
-
-<!-- '<button type="close" id="closebutton" onclick="pollcreationformlaunch()">X</button><form action="/createpoll" method="post" id="pollcreationform">Question:<input type="text" name="question" id="pollcreationquestion">Options:<div id="options"><input type="text" name="optioninput" class="optioninput" id="optioninput"></div><div id="optionaddition" onclick="addoption()">Add option</div><button type="submit">SUBMIT</button></form>' -->
-
-
-
-<!-- <form action="/createpoll" method="post" id="pollcreationform">
-    Question:<input type="text" name="question" id="pollcreationquestion">Options:<div id="options"><input type="text" name="optioninput" class="optioninput"></div><span id="optionaddition" onclick="addoption()">Add option</span><button type="submit">SUBMIT</button></form>
-
-<div id="none" class="pollcreationform">
-    <button type="close" id="closebutton" onclick="pollcreationformlaunch()">X</button>
-    <form action="/createpoll" method="post" id="pollcreationform">
-        Question:
-        <input type="text" name="question" id="pollcreationquestion">
-        Options:
-        <div id="options">
-            <input type="text" name="optioninput" id="optioninput">
-        </div>
-        <span id="optionaddition" onclick="addoption()">Add option</span>
-        <button type="submit">SUBMIT</button>
-    </form>
-</div> -->

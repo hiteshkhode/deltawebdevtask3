@@ -127,7 +127,7 @@ body{
     color:red;
     box-shadow: 0 0 5px -1px rgba(0,0,0,0.6);
 }
-#closebutton, #msgclose{
+#closebutton, #closebuttonforteam, #msgclose{
     position: absolute;
     right: 0.5em;
     top: 0.5em;

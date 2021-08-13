@@ -1,6 +1,6 @@
 const pollcreationform = document.getElementsByClassName('pollcreationform')
 var counterofoptions = 0;
-const pollform = '<form action="/createpoll" method="post" id="pollcreationform">Question:<input type="text" name="question" id="pollcreationquestion">Options:<div id="options"><input type="text" name="optioninput" class="optioninput"></div><span id="optionaddition" onclick="addoption()">Add option</span><button type="submit">SUBMIT</button></form>'
+const pollform = '<button type="close" id="closebutton" onclick="pollcreationformlaunch()">X</button><br><form action="/createpoll" method="post" id="pollcreationform">Question:<input type="text" name="question" id="pollcreationquestion">Options:<div id="options"><input type="text" name="optioninput" class="optioninput"></div><span id="optionaddition" onclick="addoption()">Add option</span><button type="submit">SUBMIT</button></form>'
 var email, password, teamname, clickeddivid
 
 function navbarhideshower(){
@@ -135,44 +135,6 @@ function appendingpolltoworkspace(arrayofhashedquestions, pollstosend){
             else div.innerText = pollstosend[i][j].question;
             div.setAttribute('onclick', 'votecounter(event)')
             document.getElementsByClassName('perticularpoll')[i].appendChild(div);
-
-            // document.getElementsByClassName('perticularpoll')[i].innerHTML += pollstosend[i][j][question] + '<br>'
-        }
-    }
-    // for (let i = 0; i < pollstosend.length; i++) {
-    //     for (let j = 0; j < pollstosend[i].length; j++) {
-    //         if(j == 0){
-    //             optioncheck = []
-    //             for (var perticularpoll in pollstosend[i][j]) {
-    // //                 question = perticularpoll
-    //                 document.getElementsByClassName('perticularpoll')[i].innerHTML = '<h3>' + question + '</h3>'
-    //                 break;
-    //             }
-    //         }
-    //         var div = document.createElement('div');
-    //         div.className = 'option';
-    //         div.id = pollstosend[i][j][question]
-    //         if(pollstosend[i][j].ended != undefined)div.innerText = pollstosend[i][j][question] + ' (' + pollstosend[i][j].ended + ')';
-    //         else div.innerText = pollstosend[i][j][question]
-    //         div.setAttribute('onclick', 'votecounter(event)')
-    //         document.getElementsByClassName('perticularpoll')[i].appendChild(div);
-    //         // document.getElementsByClassName('perticularpoll')[i].innerHTML += pollstosend[i][j][question] + '<br>'
-    //     }
-    // }
-}
-function forforthis(){
-    for (let i = 0; i < pollstosend.length; i++) {
-        questionasked = pollstosend[i][0].question
-        for (let j = 1; j < pollstosend[i].length; j++) {
-            var div = document.createElement('div');
-            div.className = 'option';
-            div.id = pollstosend[i][j].question;
-            if(pollstosend[i][j].ended !== undefined)div.innerText = pollstosend[i][j].question + ' (' + pollstosend[i][j].ended + ')';
-            else div.innerText = pollstosend[i][j].question;
-            div.setAttribute('onclick', 'votecounter(event)')
-            document.getElementsByClassName('perticularpoll')[i].appendChild(div);
-
-            // document.getElementsByClassName('perticularpoll')[i].innerHTML += pollstosend[i][j][question] + '<br>'
         }
     }
 }
@@ -272,50 +234,34 @@ function pollcreationformlaunch(){
         pollcreationform[0].setAttribute('id', 'none');
         pollcreationform[0].removeChild(document.getElementById('pollcreationform'))
         pollcreationform[0].innerHTML = pollform
+        listneradder()
     }
 }
 
-// document.getElementById('pollcreationform').addEventListener('submit', (event) => {
-//     event.preventDefault();
-//     question = [document.getElementById('pollcreationquestion').value, email]
-//     optioninput = [];
-//     teamnameandmail = document.getElementById('teamnameandmail').innerText + email;
-//     for (let i = 0; i < document.getElementsByClassName('optioninput').length; i++) {
-//         optioninput.push(document.getElementsByClassName('optioninput')[i].value)
-//     }
-//     console.log(email, teamnameandmail)
-//     fetch('/createpoll', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({question, email, optioninput, teamnameandmail})}).then(response => response.json().then(data => launchmsgbox(data.fallout)));
-//     pollcreationformlaunch();
-//     refreshingcreatedteams()
-// });
-
-// document.getElementById('pollcreationform').addEventListener('submit', (event) => {
-//     event.preventDefault();
-//     var teamnameandmail = document.getElementById('teamnameandmail').innerText
-//     jsonforpollcreation = {}
-//     jsonforpollcreation.question = document.getElementById('pollcreationquestion').value
-//     jsonforpollcreation.email = email
-//     jsonforpollcreation.optioninput = [];
-//     jsonforpollcreation.teamnameandmail = document.getElementById('teamnameandmail').innerText + email;
-//     for (let i = 0; i < document.getElementsByClassName('optioninput').length; i++) {
-//         jsonforpollcreation.optioninput.push(document.getElementsByClassName('optioninput')[i].value)
-//     }
-//     jsonstring =  JSON.stringify(jsonforpollcreation)
-//     fetch('/createpoll', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: jsonstring}).then(response => response.json().then(data => launchmsgbox(data.fallout)));
-//     pollcreationformlaunch();
-//     refreshingcreatedteams()
-// });
-
+listneradder();
+function listneradder(){    
+    document.getElementById('pollcreationform').addEventListener('submit', (event) => {
+        event.preventDefault();
+        var teamnameandmail = document.getElementById('teamnameandmail').innerText
+        jsonforpollcreation = {}
+        jsonforpollcreation.question = document.getElementById('pollcreationquestion').value
+        jsonforpollcreation.email = email
+        jsonforpollcreation.optioninput = [];
+        jsonforpollcreation.teamnameandmail = document.getElementById('teamnameandmail').innerText + email;
+        for (let i = 0; i < document.getElementsByClassName('optioninput').length; i++) {
+            jsonforpollcreation.optioninput.push(document.getElementsByClassName('optioninput')[i].value)
+        }
+        jsonstring =  JSON.stringify(jsonforpollcreation)
+        fetch('/createpoll', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: jsonstring}).then(response => response.json().then(data => launchmsgbox(data.fallout)));
+        pollcreationformlaunch();
+        refreshingcreatedteams()
+    });
+}
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  THIS IS CODE FOR LOGIN FORM
@@ -340,7 +286,6 @@ document.getElementById('loginform').addEventListener('submit', (event) => {
     email = document.getElementById('email').value;
     password = document.getElementById('password').value;
     if (statuschecker === 'Login') {
-        // fetching('/login', email, password);
         fetch('/login', {
             method: 'POST',
             headers: {
