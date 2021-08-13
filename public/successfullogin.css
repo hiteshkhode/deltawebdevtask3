@@ -97,6 +97,9 @@ body{
     width: fit-content;
     height: 1rem;
     background-color: blueviolet;
+    margin: 1px;
+    /* border-style: solid;
+    border: 5px; */
 }
 #invitition, #createdteams{
     margin-top: 30px;

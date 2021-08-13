@@ -44,13 +44,15 @@ function refreshingcreatedteams() {
 }
 function appendtodivtoarea(arrayofinvites, divid, thirdparam, fourthparam) {
     console.log(arrayofinvites, fourthparam)
-    for (let i = 0; i < arrayofinvites.length; i++) {
-        var div = document.createElement('div');
-        div.className = divid;
-        div.id = arrayofinvites[i][fourthparam]
-        div.innerText = arrayofinvites[i][thirdparam];
-        div.setAttribute('onclick', 'memberadder(event)')
-        document.getElementById(divid).appendChild(div);
+    if(arrayofinvites !== undefined){
+        for (let i = 0; i < arrayofinvites.length; i++) {
+            var div = document.createElement('div');
+            div.className = divid;
+            div.id = arrayofinvites[i][fourthparam]
+            div.innerText = arrayofinvites[i][thirdparam];
+            div.setAttribute('onclick', 'memberadder(event)')
+            document.getElementById(divid).appendChild(div);
+        }
     }
 }
 function refreshingacceptedteams() {
@@ -302,6 +304,7 @@ document.getElementById('loginform').addEventListener('submit', (event) => {
                         document.getElementById('msg').innerText = 'loggedin successfully'
                         document.getElementsByClassName('signinbox')[0].setAttribute('id', 'none')
                         document.getElementById('heading').innerText = 'YOUR LOGIN HAS BEEN SUCCESSFUL .....!'
+                        document.getElementsByClassName('bodyschild')[0].setAttribute('id', 'bodyschild')
                         refreshinvitations();
                         refreshingacceptedteams();
                         refreshingcreatedteams();
@@ -330,5 +333,6 @@ document.getElementById('loginform').addEventListener('submit', (event) => {
     }
 })
 function logout(){
-    fetch('/')
+    document.getElementsByClassName('bodyschild')[0].setAttribute('id', 'none')
+    window.location.reload();
 }
