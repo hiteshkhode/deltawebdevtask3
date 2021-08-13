@@ -86,15 +86,23 @@ function teamcreation(req, res) {
 }
 function createpolltable(question, userid) {
     questionhash = crypto.createHash('md5').update(question + userid).digest('hex');
-    const querytocreatepolltable = 'CREATE TABLE `' + questionhash + '`(`' + question + '` VARCHAR(200), vote INT);'
+    const querytocreatepolltable = 'CREATE TABLE `' + questionhash + '`( question VARCHAR(320), vote INT);'
     db.query(querytocreatepolltable, (errorincreatepolltable, result) => {
     })
 }
 function createpoll(req, res) {
     userid = req.body.email
-    var questionhash = crypto.createHash('md5').update(req.body.question + userid).digest('hex');
-    createpolltable(req.body.question, userid)
-    db.query('INSERT INTO `' + req.body.teamnameandmail + '` values("' + questionhash + '")')
+    var questionhash = crypto.createHash('md5').update(req.body.question[0] + userid).digest('hex');
+    createpolltable(req.body.question[0], userid)
+    querytoaddpoll = 'INSERT INTO `' + req.body.teamnameandmail + '` values("' + questionhash + '")'
+    console.log(querytoaddpoll)
+    db.query(querytoaddpoll, (err, result) => {
+        if(err) console.log(err.sqlMessage)
+    })
+    querytoaddquestiontotablecol = 'INSERT INTO `' + questionhash + '` VALUES("' + req.body.question[0] + '", 0)';
+    db.query(querytoaddquestiontotablecol, (err, result) => {
+        if(err) console.log(err.sqlMessage)
+    })
     let cntr = 0;
     for (let i = 0; i < req.body.optioninput.length; i++) {
         var querytoappendpolloptions = 'INSERT INTO `' + questionhash + '` VALUES("' + req.body.optioninput[i] + '", 0);'
@@ -104,6 +112,26 @@ function createpoll(req, res) {
         if(cntr === req.body.optioninput.length) res.send({fallout: 'Poll created successfully'})
     }
 }
+// function createpolltable(question, userid) {
+//     questionhash = crypto.createHash('md5').update(question + userid).digest('hex');
+//     const querytocreatepolltable = 'CREATE TABLE `' + questionhash + '`(`' + question + '` VARCHAR(200), vote INT);'
+//     db.query(querytocreatepolltable, (errorincreatepolltable, result) => {
+//     })
+// }
+// function createpoll(req, res) {
+//     userid = req.body.email
+//     var questionhash = crypto.createHash('md5').update(req.body.question + userid).digest('hex');
+//     createpolltable(req.body.question, userid)
+//     db.query('INSERT INTO `' + req.body.teamnameandmail + '` values("' + questionhash + '")')
+//     let cntr = 0;
+//     for (let i = 0; i < req.body.optioninput.length; i++) {
+//         var querytoappendpolloptions = 'INSERT INTO `' + questionhash + '` VALUES("' + req.body.optioninput[i] + '", 0);'
+//         db.query(querytoappendpolloptions, (errinappendingpolloptions, result) => {
+//         })
+//         cntr += 1;
+//         if(cntr === req.body.optioninput.length) res.send({fallout: 'Poll created successfully'})
+//     }
+// }
 function inviteuser(req, res) {
     emailtoinvite = req.body.invitee
     var querytocreateinvitetable = "CREATE TABLE `invites" + emailtoinvite + "`(invitedteam NVARCHAR(320), status VARCHAR(10), teamnamewithmail NVARCHAR(320) UNIQUE);"

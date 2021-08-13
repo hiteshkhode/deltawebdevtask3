@@ -117,6 +117,7 @@ function memberadder(event){
 }
 function appendingpolltoworkspace(arrayofhashedquestions, pollstosend){
     var question
+    console.log(pollstosend)
     for (let i = 0; i < arrayofhashedquestions.length; i++) {
         var div = document.createElement('div');
         div.className = 'perticularpoll';
@@ -124,22 +125,53 @@ function appendingpolltoworkspace(arrayofhashedquestions, pollstosend){
         document.getElementById('polls').appendChild(div);
     }
     for (let i = 0; i < pollstosend.length; i++) {
-        for (let j = 0; j < pollstosend[i].length; j++) {
-            if(j == 0){
-                optioncheck = []
-                for (var perticularpoll in pollstosend[i][j]) {
-                    question = perticularpoll
-                    document.getElementsByClassName('perticularpoll')[i].innerHTML = '<h3>' + question + '</h3>'
-                    break;
-                }
-            }
+        questionasked = pollstosend[i][0].question
+        document.getElementsByClassName('perticularpoll')[i].innerHTML = '<h3>' + questionasked + '</h3>'
+        for (let j = 1; j < pollstosend[i].length; j++) {
             var div = document.createElement('div');
             div.className = 'option';
-            div.id = pollstosend[i][j][question]
-            if(pollstosend[i][j].ended != undefined)div.innerText = pollstosend[i][j][question] + ' (' + pollstosend[i][j].ended + ')';
-            else div.innerText = pollstosend[i][j][question]
+            div.id = pollstosend[i][j].question;
+            if(pollstosend[i][j].ended !== undefined)div.innerText = pollstosend[i][j].question + ' (' + pollstosend[i][j].ended + ')';
+            else div.innerText = pollstosend[i][j].question;
             div.setAttribute('onclick', 'votecounter(event)')
             document.getElementsByClassName('perticularpoll')[i].appendChild(div);
+
+            // document.getElementsByClassName('perticularpoll')[i].innerHTML += pollstosend[i][j][question] + '<br>'
+        }
+    }
+    // for (let i = 0; i < pollstosend.length; i++) {
+    //     for (let j = 0; j < pollstosend[i].length; j++) {
+    //         if(j == 0){
+    //             optioncheck = []
+    //             for (var perticularpoll in pollstosend[i][j]) {
+    // //                 question = perticularpoll
+    //                 document.getElementsByClassName('perticularpoll')[i].innerHTML = '<h3>' + question + '</h3>'
+    //                 break;
+    //             }
+    //         }
+    //         var div = document.createElement('div');
+    //         div.className = 'option';
+    //         div.id = pollstosend[i][j][question]
+    //         if(pollstosend[i][j].ended != undefined)div.innerText = pollstosend[i][j][question] + ' (' + pollstosend[i][j].ended + ')';
+    //         else div.innerText = pollstosend[i][j][question]
+    //         div.setAttribute('onclick', 'votecounter(event)')
+    //         document.getElementsByClassName('perticularpoll')[i].appendChild(div);
+    //         // document.getElementsByClassName('perticularpoll')[i].innerHTML += pollstosend[i][j][question] + '<br>'
+    //     }
+    // }
+}
+function forforthis(){
+    for (let i = 0; i < pollstosend.length; i++) {
+        questionasked = pollstosend[i][0].question
+        for (let j = 1; j < pollstosend[i].length; j++) {
+            var div = document.createElement('div');
+            div.className = 'option';
+            div.id = pollstosend[i][j].question;
+            if(pollstosend[i][j].ended !== undefined)div.innerText = pollstosend[i][j].question + ' (' + pollstosend[i][j].ended + ')';
+            else div.innerText = pollstosend[i][j].question;
+            div.setAttribute('onclick', 'votecounter(event)')
+            document.getElementsByClassName('perticularpoll')[i].appendChild(div);
+
             // document.getElementsByClassName('perticularpoll')[i].innerHTML += pollstosend[i][j][question] + '<br>'
         }
     }
@@ -239,31 +271,50 @@ function pollcreationformlaunch(){
     else{
         pollcreationform[0].setAttribute('id', 'none');
         pollcreationform[0].removeChild(document.getElementById('pollcreationform'))
-        pollcreationform[0].innerHTML += pollform
+        pollcreationform[0].innerHTML = pollform
     }
 }
 
-document.getElementById('pollcreationform').addEventListener('submit', (event) => {
-    event.preventDefault();
-    var teamnameandmail = document.getElementById('teamnameandmail').innerText
-    jsonforpollcreation = {}
-    jsonforpollcreation.question = document.getElementById('pollcreationquestion').value
-    jsonforpollcreation.email = email
-    jsonforpollcreation.optioninput = [];
-    jsonforpollcreation.teamnameandmail = clickeddivid;
-    for (let i = 0; i < document.getElementsByClassName('optioninput').length; i++) {
-        jsonforpollcreation.optioninput.push(document.getElementsByClassName('optioninput')[i].value)
-    }
-    jsonstring =  JSON.stringify(jsonforpollcreation)
-    fetch('/createpoll', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: jsonstring}).then(response => response.json().then(data => launchmsgbox(data.fallout)));
-    pollcreationformlaunch();
-    refreshingcreatedteams()
-});
+// document.getElementById('pollcreationform').addEventListener('submit', (event) => {
+//     event.preventDefault();
+//     question = [document.getElementById('pollcreationquestion').value, email]
+//     optioninput = [];
+//     teamnameandmail = document.getElementById('teamnameandmail').innerText + email;
+//     for (let i = 0; i < document.getElementsByClassName('optioninput').length; i++) {
+//         optioninput.push(document.getElementsByClassName('optioninput')[i].value)
+//     }
+//     console.log(email, teamnameandmail)
+//     fetch('/createpoll', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({question, email, optioninput, teamnameandmail})}).then(response => response.json().then(data => launchmsgbox(data.fallout)));
+//     pollcreationformlaunch();
+//     refreshingcreatedteams()
+// });
+
+// document.getElementById('pollcreationform').addEventListener('submit', (event) => {
+//     event.preventDefault();
+//     var teamnameandmail = document.getElementById('teamnameandmail').innerText
+//     jsonforpollcreation = {}
+//     jsonforpollcreation.question = document.getElementById('pollcreationquestion').value
+//     jsonforpollcreation.email = email
+//     jsonforpollcreation.optioninput = [];
+//     jsonforpollcreation.teamnameandmail = document.getElementById('teamnameandmail').innerText + email;
+//     for (let i = 0; i < document.getElementsByClassName('optioninput').length; i++) {
+//         jsonforpollcreation.optioninput.push(document.getElementsByClassName('optioninput')[i].value)
+//     }
+//     jsonstring =  JSON.stringify(jsonforpollcreation)
+//     fetch('/createpoll', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: jsonstring}).then(response => response.json().then(data => launchmsgbox(data.fallout)));
+//     pollcreationformlaunch();
+//     refreshingcreatedteams()
+// });
 
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
